@@ -9,11 +9,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class ProductRepository implements ProductRepositoryInterface
 {
 
-    public function getByIdOrFail(int $id): Product
-    {
-        return Product::query()->findOrFail($id);
-    }
-
     /**
      * @return array
      */
@@ -39,5 +34,14 @@ class ProductRepository implements ProductRepositoryInterface
     public function getByCategory(ProductCategory $productCategory): array
     {
         return Product::query()->where('category_id', '=', $productCategory->id)->get();
+    }
+
+    /**
+     * @param int $id
+     * @return Product
+     */
+    public function getByIdOrFail(int $id): Product
+    {
+        return Product::query()->findOrFail($id);
     }
 }
