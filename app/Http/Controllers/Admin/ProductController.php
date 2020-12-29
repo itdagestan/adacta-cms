@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Services\ProductService;
-use App\Traits\UploadThumbnailTrait;
 use App\DataTransferObjects\UnitData;
 use App\DataTransferObjects\ModificationData;
 use App\DataTransferObjects\SingleProductData;
@@ -17,15 +17,20 @@ use App\Http\Requests\StoreProductWithModificationsAndUnitsRequest;
 
 class ProductController extends Controller
 {
-    use UploadThumbnailTrait;
+    private ProductRepositoryInterface $productRepository;
+
+    public function __construct(ProductRepositoryInterface $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
 
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
-        $modelsProduct = Product::orderBy('id', 'desc')
-            ->paginate(50);
+        $perPage = 50;
+        $modelsProduct = $this->productRepository->allWithPaginate($perPage);
         return view('admin.product.index', [
             'modelsProduct' => $modelsProduct
         ]);
@@ -38,7 +43,7 @@ class ProductController extends Controller
     public function create(string $type)
     {
         $modelProduct = new Product();
-        $modelsProductCategory = ProductCategory::orderBy('id')->get();
+        $modelsProductCategory = ProductCategory::query()->orderBy('id')->get();
         return view('admin.product.create', [
             'modelProduct' => $modelProduct,
             'modelsProductCategory' => $modelsProductCategory,
@@ -53,7 +58,7 @@ class ProductController extends Controller
     public function edit(int $id)
     {
         /** @var Product $modelProduct */
-        $modelProduct = Product::query()->findOrFail($id);
+        $modelProduct = $this->productRepository->getByIdOrFail($id);
         $modelsProductCategory = ProductCategory::query()->orderBy('id')->get();
         return view('admin.product.edit', [
             'modelProduct' => $modelProduct,
@@ -68,7 +73,7 @@ class ProductController extends Controller
      */
     public function show(int $id)
     {
-        $modelProduct = Product::query()->findOrFail($id);
+        $modelProduct = $this->productRepository->getByIdOrFail($id);
         return view('admin.product.show', [
             'modelProduct' => $modelProduct,
         ]);
@@ -76,7 +81,9 @@ class ProductController extends Controller
 
     /**
      * @param StoreSingleProductRequest $request
+     * @param ProductService $productService
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function storeSingleProduct(
         StoreSingleProductRequest $request,
@@ -100,6 +107,7 @@ class ProductController extends Controller
      * @param int $id
      * @param ProductService $productService
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function updateSingleProduct(
         StoreSingleProductRequest $request,
@@ -108,7 +116,7 @@ class ProductController extends Controller
     ): \Illuminate\Http\RedirectResponse
     {
         $singleProductData = SingleProductData::loadFromRequest($request);
-        $modelProduct = Product::query()->findOrFail($id);
+        $modelProduct = $this->productRepository->getByIdOrFail($id);
         $productService->saveProduct(
             $modelProduct,
             Product::TYPE_SINGLE_PRODUCT,
@@ -170,7 +178,7 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-            $modelProduct = Product::query()->findOrFail($id);
+            $modelProduct = $this->productRepository->getByIdOrFail($id);
             $singleProductData = SingleProductData::loadFromRequest($request);
             $modelProduct = $productService->saveProduct(
                 $modelProduct,
@@ -201,7 +209,7 @@ class ProductController extends Controller
      */
     public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
-        $modelProduct = Product::query()->findOrFail($id);
+        $modelProduct = $this->productRepository->getByIdOrFail($id);
         $modelProduct->delete();
         return redirect()
             ->route('admin.product.index')

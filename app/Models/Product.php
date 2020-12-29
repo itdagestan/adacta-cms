@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Auth;
  * @property int $category_id Категория
  * @property string|null $description Описание
  * @property string|null $thumbnail_path Путь к превью
- * @property int $created_by Пользователь создал
- * @property int $updated_by Пользователь обновил
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property bool $is_active Показывать на сайте
+ * @property string $type Тип товара
+ * @property string|null $link Редирект ссылка
  * @property-read mixed $thumbnail
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
@@ -41,7 +41,15 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereThumbnailPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedBy($value)
- * @mixin \Eloquent
+ * @property-read \App\Models\ProductCategory $category
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductModification[] $modifications
+ * @property-read int|null $modifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ProductUnit[] $units
+ * @property-read int|null $units_count
+ * @property-read \App\Models\User $updatedBy
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereLink($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereType($value)
  */
 class Product extends Model
 {
@@ -51,9 +59,10 @@ class Product extends Model
     const TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS = 'Товар с модификациями и тиражами';
     const TYPE_REDIRECT_LINK = 'Редирект ссылка';
 
-    protected $fillable = [];
+    protected $fillable = ['name', 'slug', 'price_old', 'price_new', 'category_id', 'price_old',
+        'price_old', 'thumbnail_path', 'is_active', 'type', 'link'];
 
-    protected $guarded = ['created_by', 'updated_by', 'created_at', 'updated_at'];
+    protected $guarded = [];
 
     protected $casts = [
         'is_visible' => 'boolean',
