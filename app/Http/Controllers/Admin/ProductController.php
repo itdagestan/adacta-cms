@@ -185,17 +185,30 @@ class ProductController extends Controller
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 $singleProductData
             );
-            foreach ($request->get('product_modification') as $productModification) {
+
+            $productModifications = $request->get('product_modification') ?? [];
+            $modificationIdsInRequest = collect($productModifications)
+                ->pluck('id')
+                ->all();
+            $productService->deleteUnusedModifications($modificationIdsInRequest);
+            foreach ($productModifications as $productModification) {
                 $modificationData = ModificationData::loadFromArray($productModification);
                 $productService->saveModification($modelProduct, $modificationData);
             }
-            foreach ($request->get('product_unit') as $productUnit) {
+
+            $productUnits = $request->get('product_unit') ?? [];
+            $unitIdsInRequest = collect($productUnits)
+                ->pluck('id')
+                ->all();
+            $productService->deleteUnusedUnits($unitIdsInRequest);
+            foreach ($productUnits as $productUnit) {
                 $unitData = UnitData::loadFromArray($productUnit);
                 $productService->saveUnit($modelProduct, $unitData);
             }
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
+            dd($exception);
             throw new \Exception();
         }
         return redirect()

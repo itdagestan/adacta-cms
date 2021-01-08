@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\FileHelperService;
 use Illuminate\Support\ServiceProvider;
 
 use App\Repositories\ProductRepository;

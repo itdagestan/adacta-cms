@@ -1,29 +1,20 @@
 <?php
 namespace App\Services;
 
-use Illuminate\Support\Str;
+use App\Interfaces\FileUpload;
 use Illuminate\Http\UploadedFile;
 
-final class FileUploadService
+final class FileUploadService implements FileUpload
 {
 
-    const IMAGE_FOLDER_PATH = 'uploads/images';
+    const IMAGE_FOLDER_PATH = '/uploads/images';
 
-    public string $filenameWithExtension;
+    public ?string $filenameWithExtension;
+    public FileHelperService $fileHelperService;
 
-    /**
-     * @param $extension
-     * @param string|null $name
-     * @return string
-     */
-    public static function generateFilenameWithExtension(
-        string $extension,
-        string $name = null
-    ): string
+    public function __construct()
     {
-        return !is_null($name)
-            ? Str::slug($name).'_'.time().'.'.$extension
-            : Str::random(25).'_'.time().'.'.$extension;
+        $this->fileHelperService = new FileHelperService();
     }
 
     /**
@@ -35,12 +26,12 @@ final class FileUploadService
     public function uploadOneThumbnail(
         UploadedFile $uploadedFile,
         string $filenameWithExtension = null,
-        string $folder = '/' . self::IMAGE_FOLDER_PATH,
+        string $folder = self::IMAGE_FOLDER_PATH,
         string $disk = 'public'
     ): void
     {
         if($filenameWithExtension === null) {
-            $filenameWithExtension = static::generateFilenameWithExtension(
+            $filenameWithExtension = $this->fileHelperService->generateFilenameWithExtension(
                 $uploadedFile->getClientOriginalExtension()
             );
         }

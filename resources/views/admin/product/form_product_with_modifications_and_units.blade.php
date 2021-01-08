@@ -51,7 +51,10 @@
             <th width="25%">Количество</th>
             <th width="20%">Ед. Измерения</th>
             <th width="25%">Цена</th>
-            <th width="30%">Действие</th>
+            <th width="30%">
+                Действие
+                <button type="button" name="add" data-add-product-unit class="btn btn-success">+</button>
+            </th>
         </tr>
         </thead>
         <tbody id="units-table-tbody">
@@ -63,11 +66,7 @@
                 </td>
                 <td><input value="{{ $modelProductUnit->unit_type }}" type="text" name="product_unit[{{ $key }}][unit_type]" class="form-control" /></td>
                 <td><input value="{{ $modelProductUnit->price }}" type="text" name="product_unit[{{ $key }}][price]" class="form-control" /></td>
-                @if($key === 0)
-                    <td><button type="button" name="add" data-add-product-unit class="btn btn-success">Добавить</button></td>
-                @else
-                    <td><button type="button" name="remove" id="" data-remove-product-unit class="btn btn-danger">Удалить</button>
-                @endif
+                <td><button type="button" name="remove" id="" data-remove-product-unit class="btn btn-danger">Удалить</button>
             </tr>
         @endforeach
         </tbody>
@@ -83,7 +82,10 @@
             <th width="25%">Название</th>
             <th width="20%">Цена</th>
             <th width="25%">Тип подсчета цены</th>
-            <th width="30%">Действие</th>
+            <th width="30%">
+                Действие
+                <button type="button" name="add" data-add-product-modification class="btn btn-success">+</button>
+            </th>
         </tr>
         </thead>
         <tbody id="modifications-table-tbody">
@@ -105,11 +107,7 @@
                         @endif
                     </select>
                 </td>
-                @if($key === 0)
-                    <td><button type="button" name="add" data-add-product-modification class="btn btn-success">Добавить</button></td>
-                @else
-                    <td><button type="button" name="remove" id="" data-remove-product-modification class="btn btn-danger">Удалить</button>
-                @endif
+                <td><button type="button" name="remove" id="" data-remove-product-modification class="btn btn-danger">Удалить</button>
             </tr>
         @endforeach
         </tbody>
