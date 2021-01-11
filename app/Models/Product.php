@@ -57,7 +57,7 @@ class Product extends Model
 
     const TYPE_SINGLE_PRODUCT = 'Одиночный товар';
     const TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS = 'Товар с модификациями и тиражами';
-    const TYPE_REDIRECT_LINK = 'Редирект ссылка';
+    const TYPE_PRODUCT_REDIRECT_LINK = 'Редирект ссылка';
 
     protected $fillable = ['name', 'slug', 'price_old', 'price_new', 'category_id', 'price_old',
         'price_old', 'thumbnail_path', 'is_active', 'type', 'link'];

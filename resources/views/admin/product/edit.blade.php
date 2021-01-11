@@ -22,8 +22,8 @@
             <form action="{{ route('admin.product.updateSingleProduct', ['id' => $modelProduct->id]) }}" method="POST" enctype="multipart/form-data">
         @elseif($type === \App\Models\Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS)
             <form action="{{ route('admin.product.updateProductWithModificationsAndUnits', ['id' => $modelProduct->id]) }}" method="POST" enctype="multipart/form-data">
-        @elseif($type === \App\Models\Product::TYPE_REDIRECT_LINK)
-            <form action="{{ route('admin.product.updateProductWithModificationsAndUnits', ['id' => $modelProduct->id]) }}" method="POST" enctype="multipart/form-data">
+        @elseif($type === \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK)
+            <form action="{{ route('admin.product.updateProductRedirectLink', ['id' => $modelProduct->id]) }}" method="POST" enctype="multipart/form-data">
         @endif
             @csrf
             @method('PUT')
@@ -42,6 +42,11 @@
                     'modelProduct' => $modelProduct,
                     'modelsProductCategory' => $modelsProductCategory,
                 ]
+            )
+            @includeWhen(
+                $type === \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK,
+                'admin.product.form_product_redirect_link',
+                ['modelProduct' => $modelProduct]
             )
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>

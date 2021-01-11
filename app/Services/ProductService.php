@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\DataTransferObjects\ProductRedirectLinkData;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
@@ -15,10 +16,17 @@ use App\DataTransferObjects\SingleProductData;
 final class ProductService
 {
 
+    /**
+     * @param Product $modelProduct
+     * @param string $productType
+     * @param SingleProductData|ProductRedirectLinkData $productData
+     * @return Product
+     * @throws \Exception
+     */
     public function saveProduct(
         Product $modelProduct,
         string $productType,
-        SingleProductData $productData
+        $productData
     ): Product
     {
         $fileUploadService = new FileUploadService();
@@ -29,6 +37,7 @@ final class ProductService
         $modelProduct->category_id = $productData->getCategoryId();
         $modelProduct->description = $productData->getDescription();
         $modelProduct->is_active = $productData->getIsActive();
+        $modelProduct->link = $productData->getLink();
         $modelProduct->type = $productType;
         if ($productData->getThumbnail() !== null) {
             $fileUploadService->uploadOneThumbnail($productData->getThumbnail());

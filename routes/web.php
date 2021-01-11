@@ -42,21 +42,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
         '/product/create/single-product',
         [\App\Http\Controllers\Admin\ProductController::class, 'storeSingleProduct']
     )->name('product.storeSingleProduct')->middleware('auth');
-
-    Route::post(
-        '/product/create/product-with-modifications-and-units',
-        [\App\Http\Controllers\Admin\ProductController::class, 'storeProductWithModificationsAndUnits']
-    )->name('product.storeProductWithModificationsAndUnits')->middleware('auth');
-
     Route::put(
         '/product/update/single-product/{id}',
         [\App\Http\Controllers\Admin\ProductController::class, 'updateSingleProduct']
     )->name('product.updateSingleProduct')->middleware('auth');
 
+    Route::post(
+        '/product/create/product-with-modifications-and-units',
+        [\App\Http\Controllers\Admin\ProductController::class, 'storeProductWithModificationsAndUnits']
+    )->name('product.storeProductWithModificationsAndUnits')->middleware('auth');
     Route::put(
         '/product/update/product-with-modifications-and-units/{id}',
         [\App\Http\Controllers\Admin\ProductController::class, 'updateProductWithModificationsAndUnits']
     )->name('product.updateProductWithModificationsAndUnits')->middleware('auth');
+
+    Route::post(
+        '/product/create/product-redirect-link',
+        [\App\Http\Controllers\Admin\ProductController::class, 'storeProductRedirectLink']
+    )->name('product.storeProductRedirectLink')->middleware('auth');
+    Route::put(
+        '/product/update/product-redirect-link/{id}',
+        [\App\Http\Controllers\Admin\ProductController::class, 'updateProductRedirectLink']
+    )->name('product.updateProductRedirectLink')->middleware('auth');
 
     Route::resource('product','App\Http\Controllers\Admin\ProductController')
         ->middleware('auth')->except(['create', 'store', 'update']);

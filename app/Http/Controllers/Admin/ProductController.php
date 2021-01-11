@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTransferObjects\ProductRedirectLinkData;
+use App\Http\Requests\StoreProductRedirectLinkRequest;
 use App\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -208,9 +210,56 @@ class ProductController extends Controller
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
             throw new \Exception();
         }
+        return redirect()
+            ->route('admin.product.index')
+            ->with('success','Товар успешно изменен');
+    }
+
+    /**
+     * @param StoreSingleProductRequest $request
+     * @param ProductService $productService
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function storeProductRedirectLink(
+        StoreProductRedirectLinkRequest $request,
+        ProductService $productService
+    ): \Illuminate\Http\RedirectResponse
+    {
+        $productRedirectLinkData = ProductRedirectLinkData::loadFromRequest($request);
+        $modelProduct = new Product();
+        $productService->saveProduct(
+            $modelProduct,
+            Product::TYPE_PRODUCT_REDIRECT_LINK,
+            $productRedirectLinkData
+        );
+        return redirect()
+            ->route('admin.product.index')
+            ->with('success','Категория успешно создана');
+    }
+
+    /**
+     * @param StoreSingleProductRequest $request
+     * @param int $id
+     * @param ProductService $productService
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
+    public function updateProductRedirectLink(
+        StoreProductRedirectLinkRequest $request,
+        int $id,
+        ProductService $productService
+    ): \Illuminate\Http\RedirectResponse
+    {
+        $productRedirectLinkData = ProductRedirectLinkData::loadFromRequest($request);
+        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $productService->saveProduct(
+            $modelProduct,
+            Product::TYPE_PRODUCT_REDIRECT_LINK,
+            $productRedirectLinkData
+        );
         return redirect()
             ->route('admin.product.index')
             ->with('success','Товар успешно изменен');

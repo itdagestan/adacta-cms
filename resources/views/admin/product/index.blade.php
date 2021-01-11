@@ -8,6 +8,9 @@
             <a href="{{ route('admin.product.create', ['type' => \App\Models\Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS]) }}" class="btn btn-success mb-2">
                 Создать товар с тиражом и модификациями
             </a>
+            <a href="{{ route('admin.product.create', ['type' => \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK]) }}" class="btn btn-success mb-2">
+                Создать товар-ссылку
+            </a>
             <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-sm">
