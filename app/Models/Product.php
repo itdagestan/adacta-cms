@@ -62,8 +62,6 @@ class Product extends Model
     protected $fillable = ['name', 'slug', 'price_old', 'price_new', 'category_id', 'price_old',
         'price_old', 'thumbnail_path', 'is_active', 'type', 'link'];
 
-    protected $guarded = [];
-
     protected $casts = [
         'is_visible' => 'boolean',
     ];

@@ -38,9 +38,7 @@ class Page extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-
-    protected $guarded = ['created_by', 'updated_by', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'slug', 'html', 'is_active'];
 
     protected $casts = [
         'is_visible' => 'boolean',

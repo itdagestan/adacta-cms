@@ -3,7 +3,6 @@
 
 namespace App\Services;
 
-use App\DataTransferObjects\ProductRedirectLinkData;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
@@ -12,6 +11,7 @@ use App\Models\ProductModification;
 use App\DataTransferObjects\UnitData;
 use App\DataTransferObjects\ModificationData;
 use App\DataTransferObjects\SingleProductData;
+use App\DataTransferObjects\ProductRedirectLinkData;
 
 final class ProductService
 {
