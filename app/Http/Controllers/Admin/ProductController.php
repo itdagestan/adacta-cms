@@ -8,9 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Services\ProductService;
-use App\DataTransferObjects\UnitData;
-use App\DataTransferObjects\ModificationData;
-use App\DataTransferObjects\SingleProductData;
+use App\DataTransferObjects\UnitDataLoadFromRequest;
+use App\DataTransferObjects\ModificationDataLoadFromRequest;
+use App\DataTransferObjects\SingleProductDataLoadFromRequest;
 use App\EloquentProxies\ProductEloquentProxies;
 use App\Http\Requests\StoreSingleProductRequest;
 use App\Http\Requests\StoreProductRedirectLinkRequest;
@@ -97,7 +97,7 @@ class ProductController extends Controller
         ProductService $productService
     )
     {
-        $singleProductData = SingleProductData::loadFromRequest($request);
+        $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
         $modelProduct = new Product();
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -122,7 +122,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $singleProductData = SingleProductData::loadFromRequest($request);
+        $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -147,18 +147,18 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
             $modelProduct = new Product();
-            $singleProductData = SingleProductData::loadFromRequest($request);
+            $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
             $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 $singleProductData
             );
             foreach ($request->get('product_modification') as $productModification) {
-                $modificationData = ModificationData::loadFromArray($productModification);
+                $modificationData = ModificationDataLoadFromRequest::loadFromArray($productModification);
                 $productService->saveModificationOrThrow($modelProduct, $modificationData);
             }
             foreach ($request->get('product_unit') as $productUnit) {
-                $unitData = UnitData::loadFromArray($productUnit);
+                $unitData = UnitDataLoadFromRequest::loadFromArray($productUnit);
                 $productService->saveUnitOrThrow($modelProduct, $unitData);
             }
             DB::commit();
@@ -186,7 +186,7 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
             $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
-            $singleProductData = SingleProductData::loadFromRequest($request);
+            $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
             $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
@@ -199,7 +199,7 @@ class ProductController extends Controller
                 ->all();
             $productService->deleteUnusedModificationsOrThrow($modificationIdsInRequest);
             foreach ($productModifications as $productModification) {
-                $modificationData = ModificationData::loadFromArray($productModification);
+                $modificationData = ModificationDataLoadFromRequest::loadFromArray($productModification);
                 $productService->saveModificationOrThrow($modelProduct, $modificationData);
             }
 
@@ -209,7 +209,7 @@ class ProductController extends Controller
                 ->all();
             $productService->deleteUnusedUnitsOrThrow($unitIdsInRequest);
             foreach ($productUnits as $productUnit) {
-                $unitData = UnitData::loadFromArray($productUnit);
+                $unitData = UnitDataLoadFromRequest::loadFromArray($productUnit);
                 $productService->saveUnitOrThrow($modelProduct, $unitData);
             }
             DB::commit();
@@ -233,7 +233,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = SingleProductData::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductDataLoadFromRequest::loadFromRequest($request);
         $modelProduct = new Product();
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -258,7 +258,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = SingleProductData::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductDataLoadFromRequest::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProductOrThrow(
             $modelProduct,

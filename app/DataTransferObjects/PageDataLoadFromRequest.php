@@ -2,45 +2,48 @@
 namespace App\DataTransferObjects;
 
 use Illuminate\Http\Request;
-use App\Interfaces\DataTransferObject;
+use App\Interfaces\DataTransferObjectLoadFromRequest;
 
-class ProductCategoryData implements DataTransferObject
+class PageDataLoadFromRequest implements DataTransferObjectLoadFromRequest
 {
 
     protected string $name;
     protected string $slug;
+    protected string $html;
     protected bool $is_active;
 
     /**
      * @param string $name
      * @param string $slug
+     * @param string $html
      * @param bool $is_active
      */
     public function __construct(
         string $name,
         string $slug,
+        string $html,
         bool $is_active
     )
     {
         $this->name = $name;
         $this->slug = $slug;
+        $this->html = $html;
         $this->is_active = $is_active;
     }
 
     /**
      * @param Request $request
-     * @return ProductCategoryData
+     * @return PageDataLoadFromRequest
      */
-    public static function loadFromRequest(Request $request): ProductCategoryData
+    public static function loadFromRequest(Request $request): PageDataLoadFromRequest
     {
         return new self(
             $request['name'],
             $request['slug'],
+            $request['html'],
             (bool)$request['is_active'],
         );
     }
-
-    public static function loadFromArray(array $request): void {}
 
     /**
      * @return string
@@ -72,6 +75,22 @@ class ProductCategoryData implements DataTransferObject
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtml(): string
+    {
+        return $this->html;
+    }
+
+    /**
+     * @param string $html
+     */
+    public function setHtml(string $html): void
+    {
+        $this->html = $html;
     }
 
     /**

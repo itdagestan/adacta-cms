@@ -3,9 +3,9 @@ namespace App\DataTransferObjects;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use App\Interfaces\DataTransferObject;
+use App\Interfaces\DataTransferObjectLoadFromRequest;
 
-class SingleProductData implements DataTransferObject
+class SingleProductDataLoadFromRequest implements DataTransferObjectLoadFromRequest
 {
 
     protected string $name;
@@ -43,9 +43,9 @@ class SingleProductData implements DataTransferObject
 
     /**
      * @param Request $request
-     * @return SingleProductData
+     * @return SingleProductDataLoadFromRequest
      */
-    public static function loadFromRequest(Request $request): SingleProductData
+    public static function loadFromRequest(Request $request): SingleProductDataLoadFromRequest
     {
         return new self(
             $request['name'],
@@ -59,8 +59,6 @@ class SingleProductData implements DataTransferObject
             $request['link'],
         );
     }
-
-    public static function loadFromArray(array $request): void {}
 
     public function getName(): string
     {

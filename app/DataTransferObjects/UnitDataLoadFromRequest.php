@@ -1,10 +1,11 @@
 <?php
 namespace App\DataTransferObjects;
 
-use App\Interfaces\DataTransferObject;
 use Illuminate\Http\Request;
 
-final class UnitData implements DataTransferObject
+use App\Interfaces\DataTransferObjectLoadFromArray;
+
+final class UnitDataLoadFromRequest implements DataTransferObjectLoadFromArray
 {
 
     private ?int $id;
@@ -26,13 +27,11 @@ final class UnitData implements DataTransferObject
         $this->price = $price;
     }
 
-    public static function loadFromRequest(Request $request): void {}
-
     /**
      * @param array $request
-     * @return UnitData
+     * @return UnitDataLoadFromRequest
      */
-    public static function loadFromArray(array $request): UnitData
+    public static function loadFromArray(array $request): UnitDataLoadFromRequest
     {
         $id = isset($request['id']) ? $request['id'] : null;
         return new self(

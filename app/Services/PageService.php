@@ -4,20 +4,20 @@
 namespace App\Services;
 
 use App\Models\Page;
-use App\DataTransferObjects\PageData;
+use App\DataTransferObjects\PageDataLoadFromRequest;
 
 final class PageService
 {
 
     /**
      * @param Page $modelPage
-     * @param PageData $pageData
+     * @param PageDataLoadFromRequest $pageData
      * @return void
      * @throws \Exception
      */
     public function savePage(
         Page $modelPage,
-        PageData $pageData
+        PageDataLoadFromRequest $pageData
     ): void
     {
         $modelPage->name = $pageData->getName();

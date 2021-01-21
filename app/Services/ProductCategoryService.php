@@ -4,20 +4,20 @@
 namespace App\Services;
 
 use App\Models\ProductCategory;
-use App\DataTransferObjects\ProductCategoryData;
+use App\DataTransferObjects\ProductCategoryDataLoadFromRequest;
 
 final class ProductCategoryService
 {
 
     /**
      * @param ProductCategory $modelProductCategory
-     * @param ProductCategoryData $productCategoryData
+     * @param ProductCategoryDataLoadFromRequest $productCategoryData
      * @return void
      * @throws \Exception
      */
     public function saveProductCategory(
         ProductCategory $modelProductCategory,
-        ProductCategoryData $productCategoryData
+        ProductCategoryDataLoadFromRequest $productCategoryData
     ): void
     {
         $modelProductCategory->name = $productCategoryData->getName();

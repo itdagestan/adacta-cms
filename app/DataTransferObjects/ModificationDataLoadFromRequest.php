@@ -2,9 +2,10 @@
 namespace App\DataTransferObjects;
 
 use Illuminate\Http\Request;
-use App\Interfaces\DataTransferObject;
 
-final class ModificationData implements DataTransferObject
+use App\Interfaces\DataTransferObjectLoadFromArray;
+
+final class ModificationDataLoadFromRequest implements DataTransferObjectLoadFromArray
 {
 
     private ?int $id;
@@ -28,9 +29,9 @@ final class ModificationData implements DataTransferObject
 
     /**
      * @param array $request
-     * @return ModificationData
+     * @return ModificationDataLoadFromRequest
      */
-    public static function loadFromArray(array $request): ModificationData
+    public static function loadFromArray(array $request): ModificationDataLoadFromRequest
     {
         $id = isset($request['id']) ? $request['id'] : null;
         return new self(
@@ -40,8 +41,6 @@ final class ModificationData implements DataTransferObject
             $request['price_type']
         );
     }
-
-    public static function loadFromRequest(Request $request): void {}
 
     /**
      * @return int|null

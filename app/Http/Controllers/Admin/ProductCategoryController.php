@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\ProductCategory;
 use App\Services\ProductCategoryService;
-use App\DataTransferObjects\ProductCategoryData;
+use App\DataTransferObjects\ProductCategoryDataLoadFromRequest;
 use App\Http\Requests\StoreProductCategoryRequest;
 use App\EloquentProxies\ProductCategoryEloquentProxies;
 
@@ -59,7 +59,7 @@ class ProductCategoryController extends Controller
         ProductCategoryService $productCategoryService
     )
     {
-        $productCategoryData = ProductCategoryData::loadFromRequest($request);
+        $productCategoryData = ProductCategoryDataLoadFromRequest::loadFromRequest($request);
         $modelProductCategory = new ProductCategory();
         $productCategoryService->saveProductCategory(
             $modelProductCategory,
@@ -81,7 +81,7 @@ class ProductCategoryController extends Controller
         ProductCategoryService $productCategoryService
     )
     {
-        $productCategoryData = ProductCategoryData::loadFromRequest($request);
+        $productCategoryData = ProductCategoryDataLoadFromRequest::loadFromRequest($request);
         $modelProductCategory = $this->productCategoryEloquentProxies->getByIdOrFail($id);
         $productCategoryService->saveProductCategory(
             $modelProductCategory,
