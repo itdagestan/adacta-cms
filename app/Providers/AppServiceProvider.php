@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-use App\Services\FileHelperService;
 use Illuminate\Support\ServiceProvider;
 
-use App\Repositories\ProductRepository;
+use App\EloquentProxies\ProductEloquentProxies;
 use App\Interfaces\ProductRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,10 +19,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->isLocal()) {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
-        $this->app->bind(
-            ProductRepositoryInterface::class,
-            ProductRepository::class
-        );
     }
 
     /**

@@ -31,7 +31,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->middleware('auth');
 
     Route::resource('product-category','App\Http\Controllers\Admin\ProductCategoryController')
-        ->middleware('auth');
+        ->middleware('auth')->except(['update']);
+    Route::put(
+        '/product-category/update/{id}',
+        [\App\Http\Controllers\Admin\ProductCategoryController::class, 'update']
+    )->name('product-category.update')->middleware('auth');
 
     Route::get(
         '/product/create/{type}',
@@ -69,6 +73,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->middleware('auth')->except(['create', 'store', 'update']);
 
     Route::resource('page','App\Http\Controllers\Admin\PageController')
-        ->middleware('auth');
+        ->middleware('auth')->except(['update']);
+    Route::put(
+        '/page/update/{id}',
+        [\App\Http\Controllers\Admin\PageController::class, 'update']
+    )->name('page.update')->middleware('auth');
 
 });

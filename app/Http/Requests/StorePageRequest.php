@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePageRequest extends FormRequest
@@ -26,9 +27,13 @@ class StorePageRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'slug' => "required|string|unique:pages,slug,except,{$this->route('id')}|max:255",
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('product_categories')->ignore($this->route('id'))
+            ],
             'html' => 'required|string',
-            'is_active' => 'required'
         ];
     }
 }

@@ -3,28 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductCategoryRequest;
 
 use App\Models\ProductCategory;
+use App\Services\ProductCategoryService;
+use App\DataTransferObjects\ProductCategoryData;
+use App\Http\Requests\StoreProductCategoryRequest;
+use App\EloquentProxies\ProductCategoryEloquentProxies;
 
 class ProductCategoryController extends Controller
 {
+
+    private ProductCategoryEloquentProxies $productCategoryEloquentProxies;
+
+    public function __construct(ProductCategoryEloquentProxies $productCategoryEloquentProxies)
+    {
+        $this->productCategoryEloquentProxies = $productCategoryEloquentProxies;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
-        $modelsProductCategories = ProductCategory::orderBy('id', 'desc')
-            ->paginate(10);
+        $perPage = 50;
+        $modelsProductCategories = $this->productCategoryEloquentProxies->allWithPaginate($perPage);
         return view('admin.product-category.index')->with('modelsProductCategories', $modelsProductCategories);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
@@ -32,65 +39,65 @@ class ProductCategoryController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreProductCategoryRequest $request)
-    {
-        ProductCategory::create($request->all());
-        return redirect()->route('admin.product-category.index')->with('success','Категория успешно создана');
-    }
-
-    /**
-     * Display the specified resource.
-     *
      * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
-    {
-        $modelProductCategory = ProductCategory::findOrFail($id);
-        return view('admin.product-category.show', ['modelProductCategory' => $modelProductCategory]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(int $id)
     {
-        $modelProductCategory = ProductCategory::findOrFail($id);
+        $modelProductCategory = $this->productCategoryEloquentProxies->getByIdOrFail($id);
         return view('admin.product-category.edit', ['modelProductCategory' => $modelProductCategory]);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  StoreProductCategoryRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param StoreProductCategoryRequest $request
+     * @param ProductCategoryService $productCategoryService
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
      */
-    public function update(StoreProductCategoryRequest $request, int $id)
+    public function store(
+        StoreProductCategoryRequest $request,
+        ProductCategoryService $productCategoryService
+    )
     {
-        $modelProductCategory = ProductCategory::findOrFail($id);
-        $modelProductCategory->fill($request->validated());
-        $modelProductCategory->update();
+        $productCategoryData = ProductCategoryData::loadFromRequest($request);
+        $modelProductCategory = new ProductCategory();
+        $productCategoryService->saveProductCategory(
+            $modelProductCategory,
+            $productCategoryData
+        );
         return redirect()->route('admin.product-category.index')->with('success','Категория успешно создана');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
+     * @param StoreProductCategoryRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param ProductCategoryService $productCategoryService
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function update(
+        int $id,
+        StoreProductCategoryRequest $request,
+        ProductCategoryService $productCategoryService
+    )
+    {
+        $productCategoryData = ProductCategoryData::loadFromRequest($request);
+        $modelProductCategory = $this->productCategoryEloquentProxies->getByIdOrFail($id);
+        $productCategoryService->saveProductCategory(
+            $modelProductCategory,
+            $productCategoryData
+        );
+        return redirect()->route('admin.product-category.index')->with('success','Категория успешно создана');
+    }
+
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
-        $modelProductCategory = ProductCategory::findOrFail($id);
+        $modelProductCategory = $this->productCategoryEloquentProxies->getByIdOrFail($id);
         $modelProductCategory->delete();
         return redirect()->route('admin.product-category.index')->with('success','Post deleted successfully');
     }

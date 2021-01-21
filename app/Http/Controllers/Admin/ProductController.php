@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTransferObjects\ProductRedirectLinkData;
-use App\Http\Requests\StoreProductRedirectLinkRequest;
-use App\Interfaces\ProductRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
@@ -14,16 +11,26 @@ use App\Services\ProductService;
 use App\DataTransferObjects\UnitData;
 use App\DataTransferObjects\ModificationData;
 use App\DataTransferObjects\SingleProductData;
+use App\EloquentProxies\ProductEloquentProxies;
 use App\Http\Requests\StoreSingleProductRequest;
+use App\DataTransferObjects\ProductRedirectLinkData;
+use App\Http\Requests\StoreProductRedirectLinkRequest;
+use App\EloquentProxies\ProductCategoryEloquentProxies;
 use App\Http\Requests\StoreProductWithModificationsAndUnitsRequest;
 
 class ProductController extends Controller
 {
-    private ProductRepositoryInterface $productRepository;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+    private ProductEloquentProxies $productEloquentProxies;
+    private ProductCategoryEloquentProxies $productCategoryEloquentProxies;
+
+    public function __construct(
+        ProductEloquentProxies $productRepository,
+        ProductCategoryEloquentProxies $productCategoryEloquentProxies
+    )
     {
-        $this->productRepository = $productRepository;
+        $this->productEloquentProxies = $productRepository;
+        $this->productCategoryEloquentProxies = $productCategoryEloquentProxies;
     }
 
     /**
@@ -32,7 +39,7 @@ class ProductController extends Controller
     public function index()
     {
         $perPage = 50;
-        $modelsProduct = $this->productRepository->allWithPaginate($perPage);
+        $modelsProduct = $this->productEloquentProxies->allWithPaginate($perPage);
         return view('admin.product.index', [
             'modelsProduct' => $modelsProduct
         ]);
@@ -45,7 +52,7 @@ class ProductController extends Controller
     public function create(string $type)
     {
         $modelProduct = new Product();
-        $modelsProductCategory = ProductCategory::query()->orderBy('id')->get();
+        $modelsProductCategory = $this->productCategoryEloquentProxies->all();
         return view('admin.product.create', [
             'modelProduct' => $modelProduct,
             'modelsProductCategory' => $modelsProductCategory,
@@ -59,8 +66,7 @@ class ProductController extends Controller
      */
     public function edit(int $id)
     {
-        /** @var Product $modelProduct */
-        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $modelsProductCategory = ProductCategory::query()->orderBy('id')->get();
         return view('admin.product.edit', [
             'modelProduct' => $modelProduct,
@@ -75,7 +81,7 @@ class ProductController extends Controller
      */
     public function show(int $id)
     {
-        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         return view('admin.product.show', [
             'modelProduct' => $modelProduct,
         ]);
@@ -118,7 +124,7 @@ class ProductController extends Controller
     ): \Illuminate\Http\RedirectResponse
     {
         $singleProductData = SingleProductData::loadFromRequest($request);
-        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProduct(
             $modelProduct,
             Product::TYPE_SINGLE_PRODUCT,
@@ -180,7 +186,7 @@ class ProductController extends Controller
     {
         try {
             DB::beginTransaction();
-            $modelProduct = $this->productRepository->getByIdOrFail($id);
+            $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
             $singleProductData = SingleProductData::loadFromRequest($request);
             $modelProduct = $productService->saveProduct(
                 $modelProduct,
@@ -254,7 +260,7 @@ class ProductController extends Controller
     ): \Illuminate\Http\RedirectResponse
     {
         $productRedirectLinkData = ProductRedirectLinkData::loadFromRequest($request);
-        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProduct(
             $modelProduct,
             Product::TYPE_PRODUCT_REDIRECT_LINK,
@@ -271,7 +277,7 @@ class ProductController extends Controller
      */
     public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
-        $modelProduct = $this->productRepository->getByIdOrFail($id);
+        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $modelProduct->delete();
         return redirect()
             ->route('admin.product.index')

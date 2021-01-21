@@ -15,7 +15,7 @@ final class ProductCategoryService
      * @return void
      * @throws \Exception
      */
-    public function savePage(
+    public function saveProductCategory(
         ProductCategory $modelProductCategory,
         ProductCategoryData $productCategoryData
     ): void

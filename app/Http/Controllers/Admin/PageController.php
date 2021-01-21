@@ -3,28 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePageRequest;
 
 use App\Models\Page;
+use App\Services\PageService;
+use App\DataTransferObjects\PageData;
+use App\Http\Requests\StorePageRequest;
+use App\EloquentProxies\PageEloquentProxies;
 
 class PageController extends Controller
 {
+
+    private PageEloquentProxies $pageEloquentProxies;
+
+    public function __construct(PageEloquentProxies $pageEloquentProxies)
+    {
+        $this->pageEloquentProxies = $pageEloquentProxies;
+    }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
-        $modelsPage = Page::orderBy('id', 'desc')
-            ->paginate(10);
+        $perPage = 50;
+        $modelsPage = $this->pageEloquentProxies->allWithPaginate($perPage);
         return view('admin.page.index')->with('modelsPage', $modelsPage);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
@@ -32,65 +39,75 @@ class PageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  StorePageRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePageRequest $request)
-    {
-        Page::create($request->all());
-        return redirect()->route('admin.page.index')->with('success','Категория успешно создана');
-    }
-
-    /**
-     * Display the specified resource.
-     *
      * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(int $id)
-    {
-        $modelPage = Page::findOrFail($id);
-        return view('admin.page.show', ['modelPage' => $modelPage]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(int $id)
     {
-        $modelPage = Page::findOrFail($id);
+        $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
         return view('admin.page.edit', ['modelPage' => $modelPage]);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  StorePageRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function update(StorePageRequest $request, int $id)
+    public function show(int $id)
     {
-        $modelPage = Page::findOrFail($id);
-        $modelPage->fill($request->validated());
-        $modelPage->update();
+        $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
+        return view('admin.page.show', ['modelPage' => $modelPage]);
+    }
+
+    /**
+     * @param StorePageRequest $request
+     * @param PageService $pageService
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function store(
+        StorePageRequest $request,
+        PageService $pageService
+    )
+    {
+        $pageData = PageData::loadFromRequest($request);
+        $modelPage = new Page();
+        $pageService->savePage(
+            $modelPage,
+            $pageData
+        );
         return redirect()->route('admin.page.index')->with('success','Категория успешно создана');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @param StorePageRequest $request
+     * @param PageService $pageService
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
+     */
+    public function update(
+        int $id,
+        StorePageRequest $request,
+        PageService $pageService
+    )
+    {
+        $pageData = PageData::loadFromRequest($request);
+        $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
+        $pageService->savePage(
+            $modelPage,
+            $pageData
+        );
+        return redirect()->route('admin.page.index')->with('success','Категория успешно создана');
+    }
+
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy(int $id)
     {
-        $modelPage = Page::findOrFail($id);
+        $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
         $modelPage->delete();
         return redirect()->route('admin.page.index')->with('success','Post deleted successfully');
     }
