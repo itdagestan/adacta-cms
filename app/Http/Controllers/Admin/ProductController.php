@@ -13,7 +13,6 @@ use App\DataTransferObjects\ModificationData;
 use App\DataTransferObjects\SingleProductData;
 use App\EloquentProxies\ProductEloquentProxies;
 use App\Http\Requests\StoreSingleProductRequest;
-use App\DataTransferObjects\ProductRedirectLinkData;
 use App\Http\Requests\StoreProductRedirectLinkRequest;
 use App\EloquentProxies\ProductCategoryEloquentProxies;
 use App\Http\Requests\StoreProductWithModificationsAndUnitsRequest;
@@ -100,7 +99,7 @@ class ProductController extends Controller
     {
         $singleProductData = SingleProductData::loadFromRequest($request);
         $modelProduct = new Product();
-        $productService->saveProduct(
+        $productService->saveProductOrThrow(
             $modelProduct,
             Product::TYPE_SINGLE_PRODUCT,
             $singleProductData
@@ -125,7 +124,7 @@ class ProductController extends Controller
     {
         $singleProductData = SingleProductData::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
-        $productService->saveProduct(
+        $productService->saveProductOrThrow(
             $modelProduct,
             Product::TYPE_SINGLE_PRODUCT,
             $singleProductData
@@ -149,18 +148,18 @@ class ProductController extends Controller
             DB::beginTransaction();
             $modelProduct = new Product();
             $singleProductData = SingleProductData::loadFromRequest($request);
-            $modelProduct = $productService->saveProduct(
+            $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 $singleProductData
             );
             foreach ($request->get('product_modification') as $productModification) {
                 $modificationData = ModificationData::loadFromArray($productModification);
-                $productService->saveModification($modelProduct, $modificationData);
+                $productService->saveModificationOrThrow($modelProduct, $modificationData);
             }
             foreach ($request->get('product_unit') as $productUnit) {
                 $unitData = UnitData::loadFromArray($productUnit);
-                $productService->saveUnit($modelProduct, $unitData);
+                $productService->saveUnitOrThrow($modelProduct, $unitData);
             }
             DB::commit();
         } catch (\Exception $exception) {
@@ -188,7 +187,7 @@ class ProductController extends Controller
             DB::beginTransaction();
             $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
             $singleProductData = SingleProductData::loadFromRequest($request);
-            $modelProduct = $productService->saveProduct(
+            $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 $singleProductData
@@ -198,20 +197,20 @@ class ProductController extends Controller
             $modificationIdsInRequest = collect($productModifications)
                 ->pluck('id')
                 ->all();
-            $productService->deleteUnusedModifications($modificationIdsInRequest);
+            $productService->deleteUnusedModificationsOrThrow($modificationIdsInRequest);
             foreach ($productModifications as $productModification) {
                 $modificationData = ModificationData::loadFromArray($productModification);
-                $productService->saveModification($modelProduct, $modificationData);
+                $productService->saveModificationOrThrow($modelProduct, $modificationData);
             }
 
             $productUnits = $request->get('product_unit') ?? [];
             $unitIdsInRequest = collect($productUnits)
                 ->pluck('id')
                 ->all();
-            $productService->deleteUnusedUnits($unitIdsInRequest);
+            $productService->deleteUnusedUnitsOrThrow($unitIdsInRequest);
             foreach ($productUnits as $productUnit) {
                 $unitData = UnitData::loadFromArray($productUnit);
-                $productService->saveUnit($modelProduct, $unitData);
+                $productService->saveUnitOrThrow($modelProduct, $unitData);
             }
             DB::commit();
         } catch (\Exception $exception) {
@@ -234,9 +233,9 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = ProductRedirectLinkData::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductData::loadFromRequest($request);
         $modelProduct = new Product();
-        $productService->saveProduct(
+        $productService->saveProductOrThrow(
             $modelProduct,
             Product::TYPE_PRODUCT_REDIRECT_LINK,
             $productRedirectLinkData
@@ -259,9 +258,9 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = ProductRedirectLinkData::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductData::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
-        $productService->saveProduct(
+        $productService->saveProductOrThrow(
             $modelProduct,
             Product::TYPE_PRODUCT_REDIRECT_LINK,
             $productRedirectLinkData

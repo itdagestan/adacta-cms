@@ -11,22 +11,14 @@ use App\Models\ProductModification;
 use App\DataTransferObjects\UnitData;
 use App\DataTransferObjects\ModificationData;
 use App\DataTransferObjects\SingleProductData;
-use App\DataTransferObjects\ProductRedirectLinkData;
 
 final class ProductService
 {
 
-    /**
-     * @param Product $modelProduct
-     * @param string $productType
-     * @param SingleProductData|ProductRedirectLinkData $productData
-     * @return Product
-     * @throws \Exception
-     */
-    public function saveProduct(
+    public function saveProductOrThrow(
         Product $modelProduct,
         string $productType,
-        $productData
+        SingleProductData $productData
     ): Product
     {
         $fileUploadService = new FileUploadService();
@@ -49,13 +41,7 @@ final class ProductService
             return $modelProduct;
     }
 
-    /**
-     * @param Product $modelProduct
-     * @param ModificationData $modificationData
-     * @return ProductModification
-     * @throws \Exception
-     */
-    public function saveModification(
+    public function saveModificationOrThrow(
         Product $modelProduct,
         ModificationData $modificationData
     ): ProductModification
@@ -74,13 +60,7 @@ final class ProductService
         return $modelProductModification;
     }
 
-    /**
-     * @param Product $modelProduct
-     * @param UnitData $unitData
-     * @return ProductUnit
-     * @throws \Exception
-     */
-    public function saveUnit(
+    public function saveUnitOrThrow(
         Product $modelProduct,
         UnitData $unitData
     ): ProductUnit
@@ -99,11 +79,7 @@ final class ProductService
         return $modelProductUnit;
     }
 
-    /**
-     * @param array $unitIdsInRequest
-     * @throws \Exception
-     */
-    public function deleteUnusedUnits(array $unitIdsInRequest): void
+    public function deleteUnusedUnitsOrThrow(array $unitIdsInRequest): void
     {
         try {
             DB::beginTransaction();
@@ -119,11 +95,7 @@ final class ProductService
         }
     }
 
-    /**
-     * @param array $modificationIdsInRequest
-     * @throws \Exception
-     */
-    public function deleteUnusedModifications(array $modificationIdsInRequest): void {
+    public function deleteUnusedModificationsOrThrow(array $modificationIdsInRequest): void {
         try {
             DB::beginTransaction();
             $modificationIdsInDB = collect(ProductModification::getList())->pluck('id');

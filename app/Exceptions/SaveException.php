@@ -1,9 +1,9 @@
 <?php
 namespace App\Exceptions;
 
-use App\Interfaces\VisibleException;
+use App\Interfaces\DisplayedException;
 
-class SaveException extends \Exception implements VisibleException
+class SaveException extends \Exception implements DisplayedException
 {
 
 }

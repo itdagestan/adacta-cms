@@ -16,17 +16,8 @@ class SingleProductData implements DataTransferObject
     protected ?string $description;
     protected bool $is_active;
     protected ?UploadedFile $thumbnail;
+    protected ?string $link;
 
-    /**
-     * @param string $name
-     * @param string $slug
-     * @param float $price_old
-     * @param float $price_new
-     * @param int $category_id
-     * @param string $description
-     * @param bool $is_active
-     * @param UploadedFile|null $thumbnail
-     */
     public function __construct(
         string $name,
         string $slug,
@@ -35,7 +26,8 @@ class SingleProductData implements DataTransferObject
         int $category_id,
         ?string $description,
         bool $is_active,
-        ?UploadedFile $thumbnail
+        ?UploadedFile $thumbnail,
+        ?string $link
     )
     {
         $this->name = $name;
@@ -46,6 +38,7 @@ class SingleProductData implements DataTransferObject
         $this->description = $description;
         $this->is_active = $is_active;
         $this->thumbnail = $thumbnail;
+        $this->link = $link;
     }
 
     /**
@@ -62,137 +55,100 @@ class SingleProductData implements DataTransferObject
             $request['category_id'],
             $request['description'],
             (bool)$request['is_active'],
-            $request->file('thumbnail_file')
+            $request->file('thumbnail_file'),
+            $request['link'],
         );
     }
 
     public static function loadFromArray(array $request): void {}
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getSlug(): string
     {
         return $this->slug;
     }
 
-    /**
-     * @param string $slug
-     */
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
     }
 
-    /**
-     * @return float
-     */
     public function getPriceOld(): float
     {
         return $this->price_old;
     }
 
-    /**
-     * @param float $price_old
-     */
     public function setPriceOld(float $price_old): void
     {
         $this->price_old = $price_old;
     }
 
-    /**
-     * @return float
-     */
     public function getPriceNew(): float
     {
         return $this->price_new;
     }
 
-    /**
-     * @param float $price_new
-     */
     public function setPriceNew(float $price_new): void
     {
         $this->price_new = $price_new;
     }
 
-    /**
-     * @return int
-     */
     public function getCategoryId(): int
     {
         return $this->category_id;
     }
 
-    /**
-     * @param int $category_id
-     */
     public function setCategoryId(int $category_id): void
     {
         $this->category_id = $category_id;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @param string|null $description
-     */
     public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsActive(): bool
     {
         return $this->is_active;
     }
 
-    /**
-     * @param bool $is_active
-     */
     public function setIsActive(bool $is_active): void
     {
         $this->is_active = $is_active;
     }
 
-    /**
-     * @return UploadedFile|null
-     */
     public function getThumbnail(): ?UploadedFile
     {
         return $this->thumbnail;
     }
 
-    /**
-     * @param UploadedFile|null $thumbnail
-     */
     public function setThumbnail(?UploadedFile $thumbnail): void
     {
         $this->thumbnail = $thumbnail;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): void
+    {
+        $this->link = $link;
     }
 }

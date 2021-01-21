@@ -6,7 +6,6 @@ use App\Services\FileHelperService;
 
 interface FileUpload
 {
-
     public function uploadOneThumbnail(
         UploadedFile $uploadedFile,
         string $filenameWithExtension,
