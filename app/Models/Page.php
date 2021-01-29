@@ -42,7 +42,7 @@ class Page extends Model
     protected $fillable = ['name', 'slug', 'html', 'is_active'];
 
     protected $casts = [
-        'is_visible' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public static function boot()

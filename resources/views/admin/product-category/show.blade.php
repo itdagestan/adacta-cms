@@ -20,7 +20,7 @@
                         <tr>
                             <td>{{ $modelProductCategory->id }}</td>
                             <td>{{ $modelProductCategory->name }}</td>
-                            <td>{{ $modelProductCategory->is_visible }}</td>
+                            <td>{{ $modelProductCategory->is_active }}</td>
                             <td>
                                 <a href="{{ route('admin.product-category.edit', $modelProductCategory) }}" class="btn btn-success">Изменить</a>
                                 <a type="submit" class="btn btn-danger" onclick="event.preventDefault();

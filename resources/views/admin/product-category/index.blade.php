@@ -21,7 +21,7 @@
                             <tr>
                                 <td>{{ $modelProductCategories->id }}</td>
                                 <td>{{ $modelProductCategories->name }}</td>
-                                <td>{{ $modelProductCategories->is_visible }}</td>
+                                <td>{{ $modelProductCategories->is_active }}</td>
                                 <td>
                                     <a href="{{ route('admin.product-category.show', $modelProductCategories) }}" class="">Посмотреть</a>
                                     <a href="{{ route('admin.product-category.edit', $modelProductCategories) }}" class="">Изменить</a>

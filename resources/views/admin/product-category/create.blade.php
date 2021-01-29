@@ -19,18 +19,7 @@
         @endif
         <form action="{{ route('admin.product-category.store') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label for="name">Название:</label>
-                <input type="text" class="form-control" id="name" placeholder="Введите название" name="name">
-            </div>
-            <div class="form-group">
-                <label for="slug">ЧПУ:</label>
-                <input type="text" class="form-control" id="slug" placeholder="Введите ЧПУ" name="slug">
-            </div>
-            <div class="form-group">
-                <label for="is_visible">Виден:</label>
-                <input type="checkbox" class="" id="is_visible" name="is_visible" value="1" checked>
-            </div>
+            @include('admin.product-category._form', ['modelProductCategory', $modelProductCategory])
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     </div>

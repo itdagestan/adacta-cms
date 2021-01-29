@@ -20,7 +20,7 @@
                         <tr>
                             <td>{{ $modelPage->id }}</td>
                             <td>{{ $modelPage->name }}</td>
-                            <td>{{ $modelPage->is_visible }}</td>
+                            <td>{{ $modelPage->is_active }}</td>
                             <td>
                                 <a href="{{ route('admin.page.edit', $modelPage->id) }}" class="btn btn-success">Изменить</a>
                                 <a type="submit" class="btn btn-danger" onclick="event.preventDefault();

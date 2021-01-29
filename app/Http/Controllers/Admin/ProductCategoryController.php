@@ -35,7 +35,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.product-category.create');
+        return view('admin.product-category.create', ['modelProductCategory' => new ProductCategory()]);
     }
 
     /**

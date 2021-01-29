@@ -50,11 +50,9 @@ class ProductController extends Controller
      */
     public function create(string $type)
     {
-        $modelProduct = new Product();
-        $modelsProductCategory = $this->productCategoryEloquentProxies->all();
         return view('admin.product.create', [
-            'modelProduct' => $modelProduct,
-            'modelsProductCategory' => $modelsProductCategory,
+            'modelProduct' => new Product(),
+            'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
             'type' => $type
         ]);
     }
@@ -66,10 +64,9 @@ class ProductController extends Controller
     public function edit(int $id)
     {
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
-        $modelsProductCategory = ProductCategory::query()->orderBy('id')->get();
         return view('admin.product.edit', [
             'modelProduct' => $modelProduct,
-            'modelsProductCategory' => $modelsProductCategory,
+            'modelsProductCategory' => ProductCategory::query()->orderBy('id')->get(),
             'type' => $modelProduct->type,
         ]);
     }
@@ -80,9 +77,8 @@ class ProductController extends Controller
      */
     public function show(int $id)
     {
-        $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         return view('admin.product.show', [
-            'modelProduct' => $modelProduct,
+            'modelProduct' => $this->productEloquentProxies->getByIdOrFail($id),
         ]);
     }
 

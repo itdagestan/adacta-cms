@@ -34,11 +34,12 @@ class StoreProductRedirectLinkRequest extends FormRequest
                 Rule::unique('products')->ignore($this->route('id'))
             ],
             'price_old' => 'nullable|numeric',
-            'price_new' => 'required|numeric',
+            'price_new' => 'nullable|numeric',
             'category_id' => 'required|integer|exists:product_categories,id',
-            'description' => 'nullable|string',
+            'description' => 'string',
             'thumbnail_file' => 'image|mimes:jpeg,png,jpg|max:2048',
             'link' => 'string',
+            'is_active' => 'string',
         ];
     }
 }

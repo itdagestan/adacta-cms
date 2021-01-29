@@ -21,7 +21,7 @@
                             <tr>
                                 <td>{{ $modelPage->id }}</td>
                                 <td>{{ $modelPage->name }}</td>
-                                <td>{{ $modelPage->is_visible }}</td>
+                                <td>{{ $modelPage->is_active }}</td>
                                 <td>
                                     <a href="{{ route('admin.page.show', $modelPage->id) }}" class="">Посмотреть</a>
                                     <a href="{{ route('admin.page.edit', $modelPage->id) }}" class="">Изменить</a>

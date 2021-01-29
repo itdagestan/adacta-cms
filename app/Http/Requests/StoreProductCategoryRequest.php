@@ -32,7 +32,8 @@ class StoreProductCategoryRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('product_categories')->ignore($this->route('id'))
-            ]
+            ],
+            'is_active' => 'string',
         ];
     }
 }

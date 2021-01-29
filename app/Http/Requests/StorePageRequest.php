@@ -34,6 +34,7 @@ class StorePageRequest extends FormRequest
                 Rule::unique('pages')->ignore($this->route('id'))
             ],
             'html' => 'required|string',
+            'is_active' => 'string',
         ];
     }
 }

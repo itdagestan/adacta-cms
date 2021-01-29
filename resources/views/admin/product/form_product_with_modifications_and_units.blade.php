@@ -38,8 +38,8 @@
     </div>
 </div>
 <div class="form-group">
-    <label for="is_visible">Виден:</label>
-    <input value="{{ $modelProduct->is_visible }}" type="checkbox" class="" id="is_visible" name="is_visible" checked>
+    <label for="is_active">Виден:</label>
+    <input value="{{ $modelProduct->is_active }}" type="checkbox" class="" id="is_active" name="is_active" checked>
 </div>
 
 <h3>Тиражи</h3>

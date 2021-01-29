@@ -64,7 +64,7 @@ class Product extends Model
         'price_old', 'thumbnail_path', 'is_active', 'type', 'link'];
 
     protected $casts = [
-        'is_visible' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public static function boot()

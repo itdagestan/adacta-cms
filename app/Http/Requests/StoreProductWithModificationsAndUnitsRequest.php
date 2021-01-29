@@ -34,9 +34,9 @@ class StoreProductWithModificationsAndUnitsRequest extends FormRequest
                 Rule::unique('products')->ignore($this->route('id'))
             ],
             'price_old' => 'nullable|numeric',
-            'price_new' => 'required|numeric',
+            'price_new' => 'nullable|numeric',
             'category_id' => 'required|integer|exists:product_categories,id',
-            'description' => 'nullable|string',
+            'description' => 'string',
             'thumbnail_file' => 'image|mimes:jpeg,png,jpg|max:2048',
             'product_unit.count.*' => 'integer',
             'product_unit.unit_type.*' => 'string|max:255',
