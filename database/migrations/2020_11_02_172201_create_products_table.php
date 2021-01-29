@@ -25,14 +25,6 @@ class CreateProductsTable extends Migration
                 ->on('product_categories');
             $table->text('description')->nullable()->comment('Описание');
             $table->string('thumbnail_path')->nullable()->comment('Путь к превью');
-            $table->unsignedBigInteger('created_by')->comment('Пользователь создал');
-            $table->foreign('created_by')
-                ->references('id')
-                ->on('users');
-            $table->unsignedBigInteger('updated_by')->comment('Пользователь обновил');
-            $table->foreign('updated_by')
-                ->references('id')
-                ->on('users');
             $table->timestamps();
             $table->softDeletes();
             $table->boolean('is_active')->default(true)->comment('Показывать на сайте');

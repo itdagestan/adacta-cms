@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\Models\ProductCategory
@@ -48,21 +49,11 @@ class ProductCategory extends Model
 
         self::creating(function($model){
             $currentUserId = Auth::id();
-            $model->created_by = $currentUserId;
-            $model->updated_by = $currentUserId;
+            Log::info("Пользователь с ID: $currentUserId создал категорию товаров с ID $model->id.");
         });
         self::updating(function($model){
             $currentUserId = Auth::id();
-            $model->updated_by = $currentUserId;
+            Log::info("Пользователь с ID $currentUserId обновил категорию товаров с ID $model->id.");
         });
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'created_by');
-    }
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\User', 'updated_by');
     }
 }

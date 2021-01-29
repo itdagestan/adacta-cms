@@ -31,7 +31,7 @@ class StorePageRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('product_categories')->ignore($this->route('id'))
+                Rule::unique('pages')->ignore($this->route('id'))
             ],
             'html' => 'required|string',
         ];

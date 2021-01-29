@@ -35,6 +35,10 @@ class ProductUnit extends Model
 
     public $fillable = ['count', 'unit_type', 'price'];
 
+    protected $casts = [
+        'is_visible' => 'boolean',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */

@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Product
@@ -72,33 +73,17 @@ class Product extends Model
 
         self::creating(function($model){
             $currentUserId = Auth::id();
-            $model->created_by = $currentUserId;
-            $model->updated_by = $currentUserId;
+            Log::info("Пользователь с ID: $currentUserId создал товар с ID $model->id.");
         });
         self::updating(function($model){
             $currentUserId = Auth::id();
-            $model->updated_by = $currentUserId;
+            Log::info("Пользователь с ID $currentUserId обновил товар с ID $model->id.");
         });
-    }
-
-    public function getThumbnailAttribute()
-    {
-        return $this->thumbnail_file;
     }
 
     public function category()
     {
         return $this->belongsTo('App\Models\ProductCategory', 'category_id');
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\Models\User', 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo('App\Models\User', 'updated_by');
     }
 
     public function units()
