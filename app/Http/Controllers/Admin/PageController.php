@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Page;
 use App\Services\PageService;
-use App\DataTransferObjects\PageDataLoadFromRequest;
+use App\DataTransferObjects\PageDTO;
 use App\Http\Requests\StorePageRequest;
 use App\EloquentProxies\PageEloquentProxies;
 
@@ -69,7 +69,7 @@ class PageController extends Controller
         PageService $pageService
     )
     {
-        $pageData = PageDataLoadFromRequest::loadFromRequest($request);
+        $pageData = PageDTO::loadFromRequest($request);
         $modelPage = new Page();
         $pageService->savePage(
             $modelPage,
@@ -91,7 +91,7 @@ class PageController extends Controller
         PageService $pageService
     )
     {
-        $pageData = PageDataLoadFromRequest::loadFromRequest($request);
+        $pageData = PageDTO::loadFromRequest($request);
         $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
         $pageService->savePage(
             $modelPage,

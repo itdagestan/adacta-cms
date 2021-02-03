@@ -22,6 +22,7 @@ class ProductSeeder extends Seeder
         $modelProductFirst->name = 'Товар 1';
         $modelProductFirst->slug = 'product_1';
         $modelProductFirst->is_active = true;
+        $modelProductFirst->type = Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS;
         $modelProductFirst->category_id = $modelProductCategory->id;
         $modelProductFirst->save();
 
@@ -29,6 +30,7 @@ class ProductSeeder extends Seeder
         $modelProductSecond->name = 'Товар 2';
         $modelProductSecond->slug = 'product_2';
         $modelProductSecond->is_active = true;
+        $modelProductSecond->type = Product::TYPE_SINGLE_PRODUCT;
         $modelProductSecond->category_id = $modelProductCategory->id;
         $modelProductSecond->save();
 

@@ -27,7 +27,9 @@
         @endif
             @csrf
             @includeWhen(
-                $type === \App\Models\Product::TYPE_SINGLE_PRODUCT,
+                $type === \App\Models\Product::TYPE_SINGLE_PRODUCT
+                || $type === \App\Models\Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS
+                || $type === \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK,
                 'admin.product.form_single_product',
                 [
                     'modelProduct' => $modelProduct,
@@ -38,8 +40,9 @@
                 $type === \App\Models\Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 'admin.product.form_product_with_modifications_and_units',
                 [
-                    'modelProduct' => $modelProduct,
-                    'modelsProductCategory' => $modelsProductCategory,
+                    'modelProductModification' => $modelProductModification,
+                    'unitDTOAsArray' => $unitDTOAsArray,
+                    'modificationDTOAsArray' => $modificationDTOAsArray,
                 ]
             )
             @includeWhen(

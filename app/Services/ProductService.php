@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Models\ProductModification;
-use App\DataTransferObjects\UnitDataLoadFromRequest;
-use App\DataTransferObjects\ModificationDataLoadFromRequest;
-use App\DataTransferObjects\SingleProductDataLoadFromRequest;
+use App\DataTransferObjects\UnitDTO;
+use App\DataTransferObjects\ModificationDTO;
+use App\DataTransferObjects\SingleProductDTO;
 
 final class ProductService
 {
@@ -18,7 +18,7 @@ final class ProductService
     public function saveProductOrThrow(
         Product $modelProduct,
         string $productType,
-        SingleProductDataLoadFromRequest $productData
+        SingleProductDTO $productData
     ): Product
     {
         $fileUploadService = new FileUploadService();
@@ -43,7 +43,7 @@ final class ProductService
 
     public function saveModificationOrThrow(
         Product $modelProduct,
-        ModificationDataLoadFromRequest $modificationData
+        ModificationDTO $modificationData
     ): ProductModification
     {
         $modelProductModification = new ProductModification();
@@ -62,7 +62,7 @@ final class ProductService
 
     public function saveUnitOrThrow(
         Product $modelProduct,
-        UnitDataLoadFromRequest $unitData
+        UnitDTO $unitData
     ): ProductUnit
     {
         $modelProductUnit = new ProductUnit();

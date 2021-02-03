@@ -4,7 +4,7 @@ namespace App\DataTransferObjects;
 use Illuminate\Http\Request;
 use App\Interfaces\DataTransferObjectLoadFromRequest;
 
-class ProductCategoryDataLoadFromRequest implements DataTransferObjectLoadFromRequest
+class ProductCategoryDTO implements DataTransferObjectLoadFromRequest
 {
 
     protected string $name;
@@ -29,9 +29,9 @@ class ProductCategoryDataLoadFromRequest implements DataTransferObjectLoadFromRe
 
     /**
      * @param Request $request
-     * @return ProductCategoryDataLoadFromRequest
+     * @return ProductCategoryDTO
      */
-    public static function loadFromRequest(Request $request): ProductCategoryDataLoadFromRequest
+    public static function loadFromRequest(Request $request): ProductCategoryDTO
     {
         return new self(
             $request['name'],

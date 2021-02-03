@@ -1,11 +1,13 @@
 <?php
 namespace App\DataTransferObjects;
 
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\DataTransferObjectLoadFromModel;
 
+use App\Models\ProductUnit;
 use App\Interfaces\DataTransferObjectLoadFromArray;
 
-final class UnitDataLoadFromRequest implements DataTransferObjectLoadFromArray
+final class UnitDTO implements DataTransferObjectLoadFromArray, DataTransferObjectLoadFromModel
 {
 
     private ?int $id;
@@ -29,9 +31,9 @@ final class UnitDataLoadFromRequest implements DataTransferObjectLoadFromArray
 
     /**
      * @param array $request
-     * @return UnitDataLoadFromRequest
+     * @return UnitDTO
      */
-    public static function loadFromArray(array $request): UnitDataLoadFromRequest
+    public static function loadFromArray(array $request): UnitDTO
     {
         $id = isset($request['id']) ? $request['id'] : null;
         return new self(
@@ -39,6 +41,20 @@ final class UnitDataLoadFromRequest implements DataTransferObjectLoadFromArray
             $request['count'],
             $request['unit_type'],
             $request['price']
+        );
+    }
+
+    /**
+     * @param ProductUnit $modelProductUnit
+     * @return UnitDTO
+     */
+    public static function loadFromModel(Model $modelProductUnit): UnitDTO
+    {
+        return new self(
+            $modelProductUnit->id,
+            $modelProductUnit->count,
+            $modelProductUnit->unit_type,
+            $modelProductUnit->price
         );
     }
 

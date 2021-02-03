@@ -4,7 +4,7 @@ namespace App\DataTransferObjects;
 use Illuminate\Http\Request;
 use App\Interfaces\DataTransferObjectLoadFromRequest;
 
-class PageDataLoadFromRequest implements DataTransferObjectLoadFromRequest
+class PageDTO implements DataTransferObjectLoadFromRequest
 {
 
     protected string $name;
@@ -33,9 +33,9 @@ class PageDataLoadFromRequest implements DataTransferObjectLoadFromRequest
 
     /**
      * @param Request $request
-     * @return PageDataLoadFromRequest
+     * @return PageDTO
      */
-    public static function loadFromRequest(Request $request): PageDataLoadFromRequest
+    public static function loadFromRequest(Request $request): PageDTO
     {
         return new self(
             $request['name'],

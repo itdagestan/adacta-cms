@@ -1,11 +1,12 @@
 <?php
 namespace App\DataTransferObjects;
 
-use Illuminate\Http\Request;
-
 use App\Interfaces\DataTransferObjectLoadFromArray;
+use App\Interfaces\DataTransferObjectLoadFromModel;
+use App\Models\ProductModification;
+use Illuminate\Database\Eloquent\Model;
 
-final class ModificationDataLoadFromRequest implements DataTransferObjectLoadFromArray
+final class ModificationDTO implements DataTransferObjectLoadFromArray, DataTransferObjectLoadFromModel
 {
 
     private ?int $id;
@@ -29,9 +30,9 @@ final class ModificationDataLoadFromRequest implements DataTransferObjectLoadFro
 
     /**
      * @param array $request
-     * @return ModificationDataLoadFromRequest
+     * @return ModificationDTO
      */
-    public static function loadFromArray(array $request): ModificationDataLoadFromRequest
+    public static function loadFromArray(array $request): ModificationDTO
     {
         $id = isset($request['id']) ? $request['id'] : null;
         return new self(
@@ -39,6 +40,20 @@ final class ModificationDataLoadFromRequest implements DataTransferObjectLoadFro
             $request['name'],
             $request['price'],
             $request['price_type']
+        );
+    }
+
+    /**
+     * @param ProductModification $modelProductModification
+     * @return ModificationDTO
+     */
+    public static function loadFromModel(Model $modelProductModification): ModificationDTO
+    {
+        return new self(
+            $modelProductModification->id,
+            $modelProductModification->name,
+            $modelProductModification->price,
+            $modelProductModification->price_type
         );
     }
 

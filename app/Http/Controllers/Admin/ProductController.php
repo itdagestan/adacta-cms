@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ProductModification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Services\ProductService;
-use App\DataTransferObjects\UnitDataLoadFromRequest;
-use App\DataTransferObjects\ModificationDataLoadFromRequest;
-use App\DataTransferObjects\SingleProductDataLoadFromRequest;
+use App\DataTransferObjects\UnitDTO;
+use App\DataTransferObjects\ModificationDTO;
+use App\DataTransferObjects\SingleProductDTO;
 use App\EloquentProxies\ProductEloquentProxies;
 use App\Http\Requests\StoreSingleProductRequest;
 use App\Http\Requests\StoreProductRedirectLinkRequest;
@@ -45,29 +47,80 @@ class ProductController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param string $type
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function create(string $type)
+    public function create(Request $request, string $type)
     {
+        $unitDTOAsArray = [];
+        $productDTO = SingleProductDTO::getEmptyDTO();
+        if($request->old()) {
+            $productDTO = SingleProductDTO::loadFromArray($request->old());
+        }
+        if($request->old('product_unit')) {
+            foreach ($request->old('product_unit') as $unit) {
+                array_push($unitDTOAsArray, UnitDTO::loadFromArray($unit));
+            }
+        }
+        $modificationDTOAsArray = [];
+        if($request->old('product_modification')) {
+            foreach ($request->old('product_modification') as $modification) {
+                array_push($modificationDTOAsArray, ModificationDTO::loadFromArray($modification));
+            }
+        }
         return view('admin.product.create', [
             'modelProduct' => new Product(),
             'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
-            'type' => $type
+            'type' => $type,
+            'modelProductModification' => new ProductModification(),
+            'productDTO' => $productDTO,
+            'unitDTOAsArray' => $unitDTOAsArray,
+            'modificationDTOAsArray' => $modificationDTOAsArray,
         ]);
     }
 
     /**
+     * @param Request $request
      * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(int $id)
+    public function edit(Request $request, int $id)
     {
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
+        if($request->old()) {
+            $productDTO = SingleProductDTO::loadFromArray($request->old());
+        } else {
+            $productDTO = SingleProductDTO::loadFromModel($modelProduct);
+        }
+        $unitDTOAsArray = [];
+        if($request->old('product_unit')) {
+            foreach ($request->old('product_unit') as $unit) {
+                array_push($unitDTOAsArray, UnitDTO::loadFromArray($unit));
+            }
+        } else {
+            foreach ($modelProduct->units as $modelProductUnit) {
+                array_push($unitDTOAsArray, UnitDTO::loadFromModel($modelProductUnit));
+            }
+        }
+        $modificationDTOAsArray = [];
+        if($request->old('product_modification')) {
+            foreach ($request->old('product_modification') as $modification) {
+                array_push($modificationDTOAsArray, ModificationDTO::loadFromArray($modification));
+            }
+        } else {
+            foreach ($modelProduct->modifications as $modelProductModification) {
+                array_push($modificationDTOAsArray, ModificationDTO::loadFromModel($modelProductModification));
+            }
+        }
         return view('admin.product.edit', [
             'modelProduct' => $modelProduct,
             'modelsProductCategory' => ProductCategory::query()->orderBy('id')->get(),
             'type' => $modelProduct->type,
+            'modelProductModification' => new ProductModification(),
+            'productDTO' => $productDTO,
+            'unitDTOAsArray' => $unitDTOAsArray,
+            'modificationDTOAsArray' => $modificationDTOAsArray,
         ]);
     }
 
@@ -93,7 +146,7 @@ class ProductController extends Controller
         ProductService $productService
     )
     {
-        $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+        $singleProductData = SingleProductDTO::loadFromRequest($request);
         $modelProduct = new Product();
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -118,7 +171,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+        $singleProductData = SingleProductDTO::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -143,19 +196,23 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
             $modelProduct = new Product();
-            $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+            $singleProductData = SingleProductDTO::loadFromRequest($request);
             $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 $singleProductData
             );
-            foreach ($request->get('product_modification') as $productModification) {
-                $modificationData = ModificationDataLoadFromRequest::loadFromArray($productModification);
-                $productService->saveModificationOrThrow($modelProduct, $modificationData);
+            if ($request->get('product_unit')) {
+                foreach ($request->get('product_unit') as $productUnit) {
+                    $unitData = UnitDTO::loadFromArray($productUnit);
+                    $productService->saveUnitOrThrow($modelProduct, $unitData);
+                }
             }
-            foreach ($request->get('product_unit') as $productUnit) {
-                $unitData = UnitDataLoadFromRequest::loadFromArray($productUnit);
-                $productService->saveUnitOrThrow($modelProduct, $unitData);
+            if ($request->get('product_modification')) {
+                foreach ($request->get('product_modification') as $productModification) {
+                    $modificationData = ModificationDTO::loadFromArray($productModification);
+                    $productService->saveModificationOrThrow($modelProduct, $modificationData);
+                }
             }
             DB::commit();
         } catch (\Exception $exception) {
@@ -182,7 +239,7 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
             $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
-            $singleProductData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+            $singleProductData = SingleProductDTO::loadFromRequest($request);
             $modelProduct = $productService->saveProductOrThrow(
                 $modelProduct,
                 Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
@@ -195,7 +252,7 @@ class ProductController extends Controller
                 ->all();
             $productService->deleteUnusedModificationsOrThrow($modificationIdsInRequest);
             foreach ($productModifications as $productModification) {
-                $modificationData = ModificationDataLoadFromRequest::loadFromArray($productModification);
+                $modificationData = ModificationDTO::loadFromArray($productModification);
                 $productService->saveModificationOrThrow($modelProduct, $modificationData);
             }
 
@@ -205,7 +262,7 @@ class ProductController extends Controller
                 ->all();
             $productService->deleteUnusedUnitsOrThrow($unitIdsInRequest);
             foreach ($productUnits as $productUnit) {
-                $unitData = UnitDataLoadFromRequest::loadFromArray($productUnit);
+                $unitData = UnitDTO::loadFromArray($productUnit);
                 $productService->saveUnitOrThrow($modelProduct, $unitData);
             }
             DB::commit();
@@ -229,7 +286,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductDTO::loadFromRequest($request);
         $modelProduct = new Product();
         $productService->saveProductOrThrow(
             $modelProduct,
@@ -254,7 +311,7 @@ class ProductController extends Controller
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
-        $productRedirectLinkData = SingleProductDataLoadFromRequest::loadFromRequest($request);
+        $productRedirectLinkData = SingleProductDTO::loadFromRequest($request);
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         $productService->saveProductOrThrow(
             $modelProduct,

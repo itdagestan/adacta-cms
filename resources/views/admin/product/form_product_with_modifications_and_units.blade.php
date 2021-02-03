@@ -1,47 +1,3 @@
-<div class="form-group">
-    <label for="name">Название:</label>
-    <input value="{{ $modelProduct->name }}" type="text" class="form-control" id="name" placeholder="Введите название" name="name">
-</div>
-<div class="form-group">
-    <label for="slug">ЧПУ:</label>
-    <input value="{{ $modelProduct->slug }}" type="text" class="form-control" id="slug" placeholder="Введите ЧПУ" name="slug">
-</div>
-<div class="form-group">
-    <label for="price_old">Старая цена:</label>
-    <input value="{{ $modelProduct->price_old }}" type="text" class="form-control" id="price_old" placeholder="Введите старую цену" name="price_old">
-</div>
-<div class="form-group">
-    <label for="price_new">Новая цена:</label>
-    <input value="{{ $modelProduct->price_new }}" type="text" class="form-control" id="price_new" placeholder="Введите новую цену" name="price_new">
-</div>
-<div class="form-group">
-    <label for="category_id">Категория:</label>
-    <select class="form-control" id="category_id" name="category_id">
-        <option value="">Выберите категорию</option>
-        @foreach($modelsProductCategory as $modelProductCategory)
-            @if($modelProductCategory->id === $modelProduct->category_id)
-                <option value="{{ $modelProductCategory->id }}" selected>{{ $modelProductCategory->name }}</option>
-            @else
-                <option value="{{ $modelProductCategory->id }}">{{ $modelProductCategory->name }}</option>
-            @endif
-        @endforeach
-    </select>
-</div>
-<div class="form-group">
-    <label for="description">Описание:</label>
-    <textarea type="text" class="form-control" id="description" placeholder="Введите описание" name="description">{{ $modelProduct->description }}</textarea>
-</div>
-<div class="form-group">
-    <label for="thumbnail_file">Превью картинка:</label>
-    <div class="col-md-6">
-        <input id="thumbnail_file" type="file" class="form-control" name="thumbnail_file">
-    </div>
-</div>
-<div class="form-group">
-    <label for="is_active">Виден:</label>
-    <input value="{{ $modelProduct->is_active }}" type="checkbox" class="" id="is_active" name="is_active" checked>
-</div>
-
 <h3>Тиражи</h3>
 <div class="table-responsive">
     <span id="result"></span>
@@ -58,14 +14,14 @@
         </tr>
         </thead>
         <tbody id="units-table-tbody">
-        @foreach($modelProduct->units as $key => $modelProductUnit)
+        @foreach($unitDTOAsArray as $key => $unitDTO)
             <tr>
                 <td>
-                    <input hidden value="{{ $modelProductUnit->id }}" type="text" name="product_unit[{{ $key }}][id]" class="form-control" />
-                    <input value="{{ $modelProductUnit->count }}" type="text" name="product_unit[{{ $key }}][count]" class="form-control" />
+                    <input hidden value="{{ $unitDTO->getId() }}" type="text" name="product_unit[{{ $key }}][id]" class="form-control" />
+                    <input value="{{ $unitDTO->getCount() }}" type="text" name="product_unit[{{ $key }}][count]" class="form-control" />
                 </td>
-                <td><input value="{{ $modelProductUnit->unit_type }}" type="text" name="product_unit[{{ $key }}][unit_type]" class="form-control" /></td>
-                <td><input value="{{ $modelProductUnit->price }}" type="text" name="product_unit[{{ $key }}][price]" class="form-control" /></td>
+                <td><input value="{{ $unitDTO->getUnitType() }}" type="text" name="product_unit[{{ $key }}][unit_type]" class="form-control" /></td>
+                <td><input value="{{ $unitDTO->getPrice() }}" type="text" name="product_unit[{{ $key }}][price]" class="form-control" /></td>
                 <td><button type="button" name="remove" id="" data-remove-product-unit class="btn btn-danger">Удалить</button>
             </tr>
         @endforeach
@@ -89,16 +45,16 @@
         </tr>
         </thead>
         <tbody id="modifications-table-tbody">
-        @foreach($modelProduct->modifications as $key => $modelProductModifications)
+        @foreach($modificationDTOAsArray as $key => $modificationDTO)
             <tr>
                 <td>
-                    <input hidden value="{{ $modelProductModifications->id }}" type="text" name="product_modification[{{ $key+1 }}][id]" class="form-control" />
-                    <input value="{{ $modelProductModifications->name }}" type="text" name="product_modification[{{ $key+1 }}][name]" class="form-control" />
+                    <input hidden value="{{ $modificationDTO->getId() }}" type="text" name="product_modification[{{ $key+1 }}][id]" class="form-control" />
+                    <input value="{{ $modificationDTO->getName() }}" type="text" name="product_modification[{{ $key+1 }}][name]" class="form-control" />
                 </td>
-                <td><input value="{{ $modelProductModifications->price }}" type="text" name="product_modification[{{ $key+1 }}][price]" class="form-control" /></td>
+                <td><input value="{{ $modificationDTO->getPrice() }}" type="text" name="product_modification[{{ $key+1 }}][price]" class="form-control" /></td>
                 <td>
                     <select name="product_modification[{{ $key+1 }}][price_type]" class="form-control">
-                        @if($modelProductModifications->price_type == $modelProductModifications::PRICE_TYPE_ONE)
+                        @if($modificationDTO->getPriceType() == $modelProductModification::PRICE_TYPE_ONE)
                             <option value="Цена за количество товара + цена за модификацию" selected>Цена за количество товара + цена за модификацию</option>
                             <option value="Цена товара + цена модификации">Цена товара + цена модификации</option>
                         @else
