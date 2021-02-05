@@ -9,18 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 final class ModificationDTO implements DataTransferObjectLoadFromArray, DataTransferObjectLoadFromModel
 {
 
-    private ?int $id;
-    private string $name;
-    private float $price;
-    private string $priceType;
+    protected ?int $id;
+    protected ?string $name;
+    protected ?float $price;
+    protected ?string $priceType;
 
-    /**
-     * @param int|null $id
-     * @param string $name
-     * @param float $price
-     * @param string $priceType
-     */
-    public function __construct(?int $id, string $name, float $price, string $priceType)
+    public function __construct(?int $id, ?string $name, ?float $price, ?string $priceType)
     {
         $this->id = $id;
         $this->name = $name;
@@ -28,18 +22,13 @@ final class ModificationDTO implements DataTransferObjectLoadFromArray, DataTran
         $this->priceType = $priceType;
     }
 
-    /**
-     * @param array $request
-     * @return ModificationDTO
-     */
-    public static function loadFromArray(array $request): ModificationDTO
+    public static function loadFromArray(array $array): ModificationDTO
     {
-        $id = isset($request['id']) ? $request['id'] : null;
         return new self(
-            $id,
-            $request['name'],
-            $request['price'],
-            $request['price_type']
+            $array['id'] ?? null,
+            $array['name'],
+            $array['price'],
+            $array['price_type']
         );
     }
 
@@ -57,66 +46,42 @@ final class ModificationDTO implements DataTransferObjectLoadFromArray, DataTran
         );
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return float
-     */
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         $this->price = $price;
     }
 
-    /**
-     * @return string
-     */
-    public function getPriceType(): string
+    public function getPriceType(): ?string
     {
         return $this->priceType;
     }
 
-    /**
-     * @param string $priceType
-     */
-    public function setPriceType(string $priceType): void
+    public function setPriceType(?string $priceType): void
     {
         $this->priceType = $priceType;
     }

@@ -9,6 +9,7 @@ use App\Services\ProductCategoryService;
 use App\DataTransferObjects\ProductCategoryDTO;
 use App\Http\Requests\StoreProductCategoryRequest;
 use App\EloquentProxies\ProductCategoryEloquentProxies;
+use Illuminate\Http\Request;
 
 class ProductCategoryController extends Controller
 {
@@ -31,21 +32,37 @@ class ProductCategoryController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.product-category.create', ['modelProductCategory' => new ProductCategory()]);
+        $productCategoryDTO = ProductCategoryDTO::getEmptyDTO();
+        if($request->old()) {
+            $productCategoryDTO = ProductCategoryDTO::loadFromArray($request->old());
+        }
+        return view('admin.product-category.create', [
+            'productCategoryDTO' => $productCategoryDTO,
+        ]);
     }
 
     /**
+     * @param Request $request
      * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(int $id)
+    public function edit(Request $request, int $id)
     {
         $modelProductCategory = $this->productCategoryEloquentProxies->getByIdOrFail($id);
-        return view('admin.product-category.edit', ['modelProductCategory' => $modelProductCategory]);
+        if($request->old()) {
+            $productCategoryDTO = ProductCategoryDTO::loadFromArray($request->old());
+            $productCategoryDTO->setId($modelProductCategory->id);
+        } else {
+            $productCategoryDTO = ProductCategoryDTO::loadFromModel($modelProductCategory);
+        }
+        return view('admin.product-category.edit', [
+            'productCategoryDTO' => $productCategoryDTO,
+        ]);
     }
 
     /**

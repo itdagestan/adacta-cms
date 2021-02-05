@@ -12,6 +12,7 @@ use App\Interfaces\DataTransferObjectLoadFromRequest;
 class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransferObjectLoadFromModel, DataTransferObjectLoadFromArray
 {
 
+    protected ?int $id;
     protected ?string $name;
     protected ?string $slug;
     protected ?float $price_old;
@@ -23,6 +24,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
     protected ?string $link;
 
     private function __construct(
+        ?int $id,
         ?string $name,
         ?string $slug,
         ?float $price_old,
@@ -34,6 +36,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
         ?string $link
     )
     {
+        $this->id = $id;
         $this->name = $name;
         $this->slug = $slug;
         $this->price_old = $price_old;
@@ -56,6 +59,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
             null,
             null,
             null,
+            null,
             null
         );
     }
@@ -67,6 +71,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
     public static function loadFromRequest(Request $request): SingleProductDTO
     {
         return new self(
+            $request['id'] ?? null,
             $request['name'],
             $request['slug'],
             $request['price_old'],
@@ -86,6 +91,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
     public static function loadFromModel(Model $modelProduct): SingleProductDTO
     {
         return new self(
+            $modelProduct->id,
             $modelProduct->name,
             $modelProduct->slug,
             $modelProduct->price_old,
@@ -105,6 +111,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
     public static function loadFromArray(array $array): SingleProductDTO
     {
         return new self(
+            $array['id'] ?? null,
             $array['name'],
             $array['slug'],
             $array['price_old'],
@@ -115,6 +122,16 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
             null,
             $array['link'] ?? null,
         );
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getName(): ?string

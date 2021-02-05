@@ -10,17 +10,11 @@ use App\Interfaces\DataTransferObjectLoadFromArray;
 final class UnitDTO implements DataTransferObjectLoadFromArray, DataTransferObjectLoadFromModel
 {
 
-    private ?int $id;
-    private int $count;
-    private string $unitType;
-    private float $price;
+    protected ?int $id;
+    protected ?int $count;
+    protected ?string $unitType;
+    protected ?float $price;
 
-    /**
-     * @param int|null $id
-     * @param int $count
-     * @param string $unitType
-     * @param float $price
-     */
     public function __construct(?int $id, int $count, string $unitType, float $price)
     {
         $this->id = $id;
@@ -29,18 +23,13 @@ final class UnitDTO implements DataTransferObjectLoadFromArray, DataTransferObje
         $this->price = $price;
     }
 
-    /**
-     * @param array $request
-     * @return UnitDTO
-     */
-    public static function loadFromArray(array $request): UnitDTO
+    public static function loadFromArray(array $array): UnitDTO
     {
-        $id = isset($request['id']) ? $request['id'] : null;
         return new self(
-            $id,
-            $request['count'],
-            $request['unit_type'],
-            $request['price']
+            $array['id'] ?? null,
+            $array['count'],
+            $array['unit_type'],
+            $array['price']
         );
     }
 
@@ -58,66 +47,42 @@ final class UnitDTO implements DataTransferObjectLoadFromArray, DataTransferObje
         );
     }
 
-    /**
-     * @return int|null
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param int|null $id
-     */
     public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getCount(): string
     {
         return $this->count;
     }
 
-    /**
-     * @param string $count
-     */
-    public function setCount(string $count): void
+    public function setCount(?string $count): void
     {
         $this->count = $count;
     }
 
-    /**
-     * @return string
-     */
-    public function getUnitType(): string
+    public function getUnitType(): ?string
     {
         return $this->unitType;
     }
 
-    /**
-     * @param string $unitType
-     */
-    public function setUnitType(string $unitType): void
+    public function setUnitType(?string $unitType): void
     {
         $this->unitType = $unitType;
     }
 
-    /**
-     * @return float
-     */
     public function getPrice(): float
     {
         return $this->price;
     }
 
-    /**
-     * @param float $price
-     */
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         $this->price = $price;
     }

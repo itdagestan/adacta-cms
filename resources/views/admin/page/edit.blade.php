@@ -1,3 +1,6 @@
+<?php
+/** @var \App\DataTransferObjects\PageDTO $pageDTO */
+?>
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
@@ -17,10 +20,12 @@
                 </ul>
             </div>
         @endif
-        <form action="{{ route('admin.page.update', $modelPage->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.page.update', $pageDTO->getId()) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            @include('admin.page._form', ['modelPage', $modelPage])
+            @include('admin.page._form', [
+                'pageDTO' => $pageDTO,
+            ])
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     </div>

@@ -1,3 +1,10 @@
+<?php
+/** @var string $type */
+/** @var \App\DataTransferObjects\SingleProductDTO $productDTO */
+/** @var \App\DataTransferObjects\UnitDTO[] $unitDTOAsArray */
+/** @var \App\DataTransferObjects\ModificationDTO[] $modificationDTOAsArray */
+/** @var string $modificationsPriceTypeOne */
+?>
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
@@ -32,7 +39,7 @@
                 || $type === \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK,
                 'admin.product.form_single_product',
                 [
-                    'modelProduct' => $modelProduct,
+                    'productDTO' => $productDTO,
                     'modelsProductCategory' => $modelsProductCategory,
                 ]
             )
@@ -40,15 +47,15 @@
                 $type === \App\Models\Product::TYPE_PRODUCT_WITH_MODIFICATIONS_AND_UNITS,
                 'admin.product.form_product_with_modifications_and_units',
                 [
-                    'modelProductModification' => $modelProductModification,
                     'unitDTOAsArray' => $unitDTOAsArray,
                     'modificationDTOAsArray' => $modificationDTOAsArray,
+                    'modificationsPriceTypeOne' => $modificationsPriceTypeOne,
                 ]
             )
             @includeWhen(
                 $type === \App\Models\Product::TYPE_PRODUCT_REDIRECT_LINK,
                 'admin.product.form_product_redirect_link',
-                ['modelProduct' => $modelProduct]
+                ['productDTO' => $productDTO]
             )
             <button class="btn btn-success" type="submit">Отправить</button>
         </form>

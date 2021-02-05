@@ -1,3 +1,8 @@
+<?php
+/** @var \App\DataTransferObjects\UnitDTO[] $unitDTOAsArray */
+/** @var \App\DataTransferObjects\ModificationDTO[] $modificationDTOAsArray */
+/** @var string $modificationsPriceTypeOne */
+?>
 <h3>Тиражи</h3>
 <div class="table-responsive">
     <span id="result"></span>
@@ -54,7 +59,7 @@
                 <td><input value="{{ $modificationDTO->getPrice() }}" type="text" name="product_modification[{{ $key+1 }}][price]" class="form-control" /></td>
                 <td>
                     <select name="product_modification[{{ $key+1 }}][price_type]" class="form-control">
-                        @if($modificationDTO->getPriceType() == $modelProductModification::PRICE_TYPE_ONE)
+                        @if($modificationDTO->getPriceType() === $modificationsPriceTypeOne)
                             <option value="Цена за количество товара + цена за модификацию" selected>Цена за количество товара + цена за модификацию</option>
                             <option value="Цена товара + цена модификации">Цена товара + цена модификации</option>
                         @else

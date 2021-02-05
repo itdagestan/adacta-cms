@@ -1,3 +1,6 @@
+<?php
+/** @var \App\DataTransferObjects\ProductCategoryDTO $productCategoryDTO */
+?>
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
@@ -17,10 +20,10 @@
                 </ul>
             </div>
         @endif
-        <form action="{{ route('admin.product-category.update', $modelProductCategory->id) }}" method="POST">
+        <form action="{{ route('admin.product-category.update', $productCategoryDTO->getId()) }}" method="POST">
             @csrf
             @method('PUT')
-            @include('admin.product-category._form', ['modelProductCategory', $modelProductCategory])
+            @include('admin.product-category._form', ['productCategoryDTO' => $productCategoryDTO])
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     </div>

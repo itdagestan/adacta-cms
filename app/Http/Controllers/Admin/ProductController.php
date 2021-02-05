@@ -53,30 +53,32 @@ class ProductController extends Controller
      */
     public function create(Request $request, string $type)
     {
-        $unitDTOAsArray = [];
         $productDTO = SingleProductDTO::getEmptyDTO();
         if($request->old()) {
             $productDTO = SingleProductDTO::loadFromArray($request->old());
         }
+
+        $unitDTOAsArray = [];
         if($request->old('product_unit')) {
             foreach ($request->old('product_unit') as $unit) {
                 array_push($unitDTOAsArray, UnitDTO::loadFromArray($unit));
             }
         }
+
         $modificationDTOAsArray = [];
         if($request->old('product_modification')) {
             foreach ($request->old('product_modification') as $modification) {
                 array_push($modificationDTOAsArray, ModificationDTO::loadFromArray($modification));
             }
         }
+
         return view('admin.product.create', [
-            'modelProduct' => new Product(),
-            'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
             'type' => $type,
-            'modelProductModification' => new ProductModification(),
             'productDTO' => $productDTO,
             'unitDTOAsArray' => $unitDTOAsArray,
             'modificationDTOAsArray' => $modificationDTOAsArray,
+            'modificationsPriceTypeOne' => ProductModification::PRICE_TYPE_ONE,
+            'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
         ]);
     }
 
@@ -90,9 +92,11 @@ class ProductController extends Controller
         $modelProduct = $this->productEloquentProxies->getByIdOrFail($id);
         if($request->old()) {
             $productDTO = SingleProductDTO::loadFromArray($request->old());
+            $productDTO->setId($modelProduct->id);
         } else {
             $productDTO = SingleProductDTO::loadFromModel($modelProduct);
         }
+
         $unitDTOAsArray = [];
         if($request->old('product_unit')) {
             foreach ($request->old('product_unit') as $unit) {
@@ -103,6 +107,7 @@ class ProductController extends Controller
                 array_push($unitDTOAsArray, UnitDTO::loadFromModel($modelProductUnit));
             }
         }
+
         $modificationDTOAsArray = [];
         if($request->old('product_modification')) {
             foreach ($request->old('product_modification') as $modification) {
@@ -113,6 +118,7 @@ class ProductController extends Controller
                 array_push($modificationDTOAsArray, ModificationDTO::loadFromModel($modelProductModification));
             }
         }
+
         return view('admin.product.edit', [
             'modelProduct' => $modelProduct,
             'modelsProductCategory' => ProductCategory::query()->orderBy('id')->get(),

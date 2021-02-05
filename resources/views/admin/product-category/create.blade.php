@@ -1,3 +1,6 @@
+<?php
+/** @var \App\DataTransferObjects\ProductCategoryDTO $productCategoryDTO */
+?>
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
@@ -19,7 +22,7 @@
         @endif
         <form action="{{ route('admin.product-category.store') }}" method="POST">
             @csrf
-            @include('admin.product-category._form', ['modelProductCategory', $modelProductCategory])
+            @include('admin.product-category._form', ['productCategoryDTO' => $productCategoryDTO])
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     </div>

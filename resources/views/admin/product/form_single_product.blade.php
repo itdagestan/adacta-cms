@@ -1,3 +1,6 @@
+<?php
+/** @var \App\DataTransferObjects\SingleProductDTO $productDTO */
+?>
 <div class="form-group">
     <label for="name">Название:</label>
     <input value="{{ $productDTO->getName() }}" type="text" class="form-control" id="name" placeholder="Введите название" name="name">
@@ -45,6 +48,6 @@
         id="is_active"
         name="is_active"
         type="checkbox"
-        {{ $productDTO->getIsActive() || !$modelProduct->exists ? 'checked' : '' }}
+        {{ $productDTO->getIsActive() || !$productDTO->getId() ? 'checked' : '' }}
     >
 </div>

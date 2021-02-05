@@ -9,6 +9,7 @@ use App\Services\PageService;
 use App\DataTransferObjects\PageDTO;
 use App\Http\Requests\StorePageRequest;
 use App\EloquentProxies\PageEloquentProxies;
+use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
@@ -31,21 +32,37 @@ class PageController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.page.create', ['modelPage' => new Page()]);
+        $pageDTO = PageDTO::getEmptyDTO();
+        if($request->old()) {
+            $pageDTO = PageDTO::loadFromArray($request->old());
+        }
+        return view('admin.page.create', [
+            'pageDTO' => $pageDTO,
+        ]);
     }
 
     /**
+     * @param Request $request
      * @param int $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(int $id)
+    public function edit(Request $request, int $id)
     {
         $modelPage = $this->pageEloquentProxies->getByIdOrFail($id);
-        return view('admin.page.edit', ['modelPage' => $modelPage]);
+        if($request->old()) {
+            $pageDTO = PageDTO::loadFromArray($request->old());
+            $pageDTO->setId($modelPage->id);
+        } else {
+            $pageDTO = PageDTO::loadFromModel($modelPage);
+        }
+        return view('admin.page.edit', [
+            'pageDTO' => $pageDTO,
+        ]);
     }
 
     /**

@@ -1,3 +1,6 @@
+<?php
+/** @var \App\DataTransferObjects\PageDTO $pageDTO */
+?>
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
@@ -19,7 +22,9 @@
         @endif
         <form action="{{ route('admin.page.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @include('admin.page._form', ['modelPage', $modelPage])
+            @include('admin.page._form', [
+                'pageDTO' => $pageDTO,
+            ])
             <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     </div>
