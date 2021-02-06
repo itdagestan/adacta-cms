@@ -3,7 +3,7 @@
 /** @var \App\DataTransferObjects\SingleProductDTO $productDTO */
 /** @var \App\DataTransferObjects\UnitDTO[] $unitDTOAsArray */
 /** @var \App\DataTransferObjects\ModificationDTO[] $modificationDTOAsArray */
-/** @var string $modificationsPriceTypeOne */
+/** @var array $modificationsPriceTypeEnum */
 ?>
 @extends('layouts.admin')
 @section('content')
@@ -49,7 +49,7 @@
                 [
                     'unitDTOAsArray' => $unitDTOAsArray,
                     'modificationDTOAsArray' => $modificationDTOAsArray,
-                    'modificationsPriceTypeOne' => $modificationsPriceTypeOne,
+                    'modificationsPriceTypeEnum' => $modificationsPriceTypeEnum,
                 ]
             )
             @includeWhen(

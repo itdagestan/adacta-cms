@@ -118,7 +118,7 @@ class SingleProductDTO implements DataTransferObjectLoadFromRequest, DataTransfe
             $array['price_new'],
             $array['category_id'],
             $array['description'],
-            (bool)$array['is_active'],
+            $array['is_active'] ?? null,
             null,
             $array['link'] ?? null,
         );

@@ -39,6 +39,7 @@ class StoreSingleProductRequest extends FormRequest
             'description' => 'nullable|string',
             'thumbnail_file' => 'image|mimes:jpeg,png,jpg|max:2048',
             'is_active' => 'nullable|string',
+            'link' => 'string',
         ];
     }
 }

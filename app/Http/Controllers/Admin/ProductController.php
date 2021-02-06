@@ -15,7 +15,6 @@ use App\DataTransferObjects\ModificationDTO;
 use App\DataTransferObjects\SingleProductDTO;
 use App\EloquentProxies\ProductEloquentProxies;
 use App\Http\Requests\StoreSingleProductRequest;
-use App\Http\Requests\StoreProductRedirectLinkRequest;
 use App\EloquentProxies\ProductCategoryEloquentProxies;
 use App\Http\Requests\StoreProductWithModificationsAndUnitsRequest;
 
@@ -77,7 +76,7 @@ class ProductController extends Controller
             'productDTO' => $productDTO,
             'unitDTOAsArray' => $unitDTOAsArray,
             'modificationDTOAsArray' => $modificationDTOAsArray,
-            'modificationsPriceTypeOne' => ProductModification::PRICE_TYPE_ONE,
+            'modificationsPriceTypeEnum' => ProductModification::$PRICE_TYPE_ENUM,
             'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
         ]);
     }
@@ -120,13 +119,12 @@ class ProductController extends Controller
         }
 
         return view('admin.product.edit', [
-            'modelProduct' => $modelProduct,
-            'modelsProductCategory' => ProductCategory::query()->orderBy('id')->get(),
             'type' => $modelProduct->type,
-            'modelProductModification' => new ProductModification(),
             'productDTO' => $productDTO,
             'unitDTOAsArray' => $unitDTOAsArray,
             'modificationDTOAsArray' => $modificationDTOAsArray,
+            'modificationsPriceTypeEnum' => ProductModification::$PRICE_TYPE_ENUM,
+            'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
         ]);
     }
 
@@ -274,6 +272,7 @@ class ProductController extends Controller
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollBack();
+            dd($exception->getMessage());
             throw new \Exception();
         }
         return redirect()
@@ -288,7 +287,7 @@ class ProductController extends Controller
      * @throws \Exception
      */
     public function storeProductRedirectLink(
-        StoreProductRedirectLinkRequest $request,
+        StoreSingleProductRequest $request,
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse
     {
@@ -312,7 +311,7 @@ class ProductController extends Controller
      * @throws \Exception
      */
     public function updateProductRedirectLink(
-        StoreProductRedirectLinkRequest $request,
+        StoreSingleProductRequest $request,
         int $id,
         ProductService $productService
     ): \Illuminate\Http\RedirectResponse

@@ -38,7 +38,7 @@ class ProductModification extends Model
     const PRICE_TYPE_ONE = 'Цена за количество товара + цена за модификацию';
     const PRICE_TYPE_TWO = 'Цена товара + цена модификации';
 
-    public static $PRICE_TYPE_ENUM = [
+    public static array $PRICE_TYPE_ENUM = [
         self::PRICE_TYPE_ONE => 'Цена за количество товара + цена за модификацию',
         self::PRICE_TYPE_TWO => 'Цена товара + цена модификации',
     ];

@@ -1,7 +1,7 @@
 <?php
 /** @var \App\DataTransferObjects\UnitDTO[] $unitDTOAsArray */
 /** @var \App\DataTransferObjects\ModificationDTO[] $modificationDTOAsArray */
-/** @var string $modificationsPriceTypeOne */
+/** @var array $modificationsPriceTypeEnum */
 ?>
 <h3>Тиражи</h3>
 <div class="table-responsive">
@@ -59,13 +59,13 @@
                 <td><input value="{{ $modificationDTO->getPrice() }}" type="text" name="product_modification[{{ $key+1 }}][price]" class="form-control" /></td>
                 <td>
                     <select name="product_modification[{{ $key+1 }}][price_type]" class="form-control">
-                        @if($modificationDTO->getPriceType() === $modificationsPriceTypeOne)
-                            <option value="Цена за количество товара + цена за модификацию" selected>Цена за количество товара + цена за модификацию</option>
-                            <option value="Цена товара + цена модификации">Цена товара + цена модификации</option>
-                        @else
-                            <option value="Цена товара + цена модификации" selected>Цена товара + цена модификации</option>
-                            <option value="Цена за количество товара + цена за модификацию">Цена за количество товара + цена за модификацию</option>
-                        @endif
+                        @foreach($modificationsPriceTypeEnum as $priceType)
+                            @if($modificationDTO->getPriceType() === $priceType)
+                                <option value="{{ $priceType }}" selected>{{ $priceType }}</option>
+                            @else
+                                <option value="{{ $priceType }}">{{ $priceType }}</option>
+                            @endif
+                        @endforeach
                     </select>
                 </td>
                 <td><button type="button" name="remove" id="" data-remove-product-modification class="btn btn-danger">Удалить</button>
