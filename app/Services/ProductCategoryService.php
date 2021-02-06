@@ -22,6 +22,7 @@ final class ProductCategoryService
     {
         $modelProductCategory->name = $productCategoryData->getName();
         $modelProductCategory->slug = $productCategoryData->getSlug();
+        $modelProductCategory->parent_id = $productCategoryData->getParentId();
         $modelProductCategory->is_active = $productCategoryData->getIsActive();
         if (!$modelProductCategory->save()) {
             throw new \Exception();

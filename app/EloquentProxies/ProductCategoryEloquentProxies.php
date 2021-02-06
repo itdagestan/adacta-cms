@@ -14,6 +14,11 @@ class ProductCategoryEloquentProxies
         return ProductCategory::query()->orderBy('id', 'desc')->get();
     }
 
+    public function allWithoutId(int $Id): Collection
+    {
+        return ProductCategory::query()->where('id', '!=', $Id)->orderBy('id', 'desc')->get();
+    }
+
     public function allWithPaginate(?int $perPage = 10): LengthAwarePaginator
     {
         return ProductCategory::query()->orderBy('id', 'desc')

@@ -13,12 +13,11 @@ use Illuminate\Support\Facades\Log;
  * @property int $id
  * @property string $name Название
  * @property string $slug ЧПУ
- * @property int $created_by Пользователь создал
- * @property int $updated_by Пользователь обновил
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
  * @property bool $is_active Показывать на сайте
+ * @property int $parent_id
  * @method static \Illuminate\Database\Eloquent\Builder|ProductCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ProductCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ProductCategory query()
@@ -37,7 +36,7 @@ class ProductCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'is_active'];
+    protected $fillable = ['name', 'slug', 'parent_id', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

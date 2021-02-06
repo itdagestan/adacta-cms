@@ -3,6 +3,7 @@
 /** @var \App\DataTransferObjects\SingleProductDTO $productDTO */
 /** @var \App\DataTransferObjects\UnitDTO[] $unitDTOAsArray */
 /** @var \App\DataTransferObjects\ModificationDTO[] $modificationDTOAsArray */
+/** @var \App\Models\ProductCategory[] $modelsProductCategory */
 /** @var array $modificationsPriceTypeEnum */
 ?>
 @extends('layouts.admin')

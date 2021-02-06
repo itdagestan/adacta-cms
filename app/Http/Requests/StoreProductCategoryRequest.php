@@ -33,6 +33,7 @@ class StoreProductCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_categories')->ignore($this->route('id'))
             ],
+            'parent_id' => 'nullable|int',
             'is_active' => 'string',
         ];
     }

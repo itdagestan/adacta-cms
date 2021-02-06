@@ -43,6 +43,7 @@ class ProductCategoryController extends Controller
         }
         return view('admin.product-category.create', [
             'productCategoryDTO' => $productCategoryDTO,
+            'modelsProductCategory' => $this->productCategoryEloquentProxies->all(),
         ]);
     }
 
@@ -62,6 +63,8 @@ class ProductCategoryController extends Controller
         }
         return view('admin.product-category.edit', [
             'productCategoryDTO' => $productCategoryDTO,
+            'modelsProductCategory' => $this->productCategoryEloquentProxies
+                ->allWithoutId($productCategoryDTO->getId()),
         ]);
     }
 

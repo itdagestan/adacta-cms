@@ -1,5 +1,6 @@
 <?php
 /** @var \App\DataTransferObjects\SingleProductDTO $productDTO */
+/** @var \App\Models\ProductCategory[] $modelsProductCategory */
 ?>
 <div class="form-group">
     <label for="name">Название:</label>
