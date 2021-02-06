@@ -1,7 +1,5 @@
 /node_modules
 /public/hot
-!/public/storage/app/uploads/images/.gitkeep
-!storage/app/uploads/images/.gitkeep
 /public/storage
 /storage/*.key
 /vendor
